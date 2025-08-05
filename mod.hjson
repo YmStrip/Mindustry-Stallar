@@ -1,0 +1,33 @@
+#the mod name as displayed in-game
+displayName: "Stellar"
+
+#the internal name of your mod
+name: "st"
+
+#your name
+author: "Encog"
+
+#the fully qualified main class of the mod
+main: "st.index"
+
+#the mod description as seen in the mod dialog
+description: "
+
+[red] in dev...
+[cyan] What these?
+- lots of factories
+- lots of turrets
+- quantum transport system
+- ...
+"
+
+#the mod version
+version: 1.0
+
+#the minimum game build required to run this mod
+minGameVersion: 149
+
+#this is a java mod
+java: true
+
+icon: "icon.png"
