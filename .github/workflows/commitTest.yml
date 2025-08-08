@@ -17,8 +17,7 @@ jobs:
         java-version: 17
     - name: Build mod jar
       run: |
-        chmod +x ./gradlew --warning-mode all
-        ./gradlew deploy
+        ./gradle build
     - name: Upload built jar file
       uses: actions/upload-artifact@v4
       with:
