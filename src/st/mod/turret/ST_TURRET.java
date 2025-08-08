@@ -127,7 +127,7 @@ public class ST_TURRET {
 			inaccuracy = 14;
 			requirements = ItemStack.with(ST_ITEM.NANOTUBE, 150, ST_ITEM.SUPERCONDUCTOR, 50, ST_ITEM.CHROMAL, 50, Items.silicon, 50);
 			shootType = ST_BULLET.BULLET_TRIANGLE
-				.build(320, ST_ITEM.GOLD_ELEMENT, 34, 16f, 1f)
+				.build(520, ST_ITEM.GOLD_ELEMENT, 34, 16f, 1f)
 				.frag(ST_BULLET.SHELL_LIGHTNING, ST_ITEM.GOLD_ELEMENT, 1, 1f, 2, 0.5f)
 				.bullet(bullet -> bullet.homingRange = 16);
 			inject(this, 1);
@@ -155,7 +155,7 @@ public class ST_TURRET {
 			shootEffect = Fx.lightningShoot;
 			requirements = ItemStack.with(ST_ITEM.NANOTUBE, 120, ST_ITEM.SUPERCONDUCTOR, 50, ST_ITEM.CHROMAL, 50, Items.graphite, 100);
 			shootType = ST_BULLET.BULLET_ELEMENT
-				.build(240, ST_ITEM.GOLD_ELEMENT, 36, 1, 1f)
+				.build(540, ST_ITEM.GOLD_ELEMENT, 36, 1, 1f)
 				.frag(ST_BULLET.SHELL_EXPLODE, ST_ITEM.GOLD_ELEMENT, 1, 0.5f, 10, 1)
 				.frag(ST_BULLET.SHELL_LIGHTNING, ST_ITEM.GOLD_ELEMENT, 1, 0.2f, 10, 1)
 				.bullet();
@@ -172,7 +172,7 @@ public class ST_TURRET {
 			shootEffect = Fx.shootTitan;
 			inaccuracy = 1;
 			requirements = ItemStack.with(ST_ITEM.NANOTUBE, 100, ST_ITEM.SUPERCONDUCTOR, 50, ST_ITEM.CHROMAL, 50, Items.graphite, 100, Items.metaglass, 50, Items.thorium, 80);
-			shootType = ST_BULLET.BULLET_SPREAD.build(1400 / 12f, ST_ITEM.GOLD_ELEMENT, 34, 1, 1f).bullet();
+			shootType = ST_BULLET.BULLET_SPREAD.build(900 / 12f, ST_ITEM.GOLD_ELEMENT, 34, 1, 1f).bullet();
 			inject(this, 1);
 		}};
 		ARMSTRONG_GUN = new ItemTurret("ARMSTRONG_GUN") {{
@@ -194,11 +194,11 @@ public class ST_TURRET {
 			inaccuracy = 5;
 			requirements = ItemStack.with(ST_ITEM.SUPERCONDUCTOR, 50, ST_ITEM.NANOTUBE, 150, ST_ITEM.CHROMAL, 50, Items.silicon, 150);
 			ammoTypes.put(Items.thorium, ST_BULLET.BULLET_MACHINE_GUN
-				.build(1200, ST_ITEM.FIRE_ELEMENT, 36, 12, 1.5f)
+				.build(1200, ST_ITEM.FIRE_ELEMENT, 36, 12, 1f)
 				.bullet()
 			);
 			ammoTypes.put(Items.titanium, ST_BULLET.BULLET_MACHINE_GUN
-				.build(940, ST_ITEM.WATER_ELEMENT, 36, 12, 1.5f).bullet()
+				.build(940, ST_ITEM.WATER_ELEMENT, 36, 12, 1f).bullet()
 			);
 			ammoTypes.put(Items.metaglass, ST_BULLET.BULLET_MACHINE_GUN
 				.build(1600, ST_ITEM.CHROMAL, 36, 14, 2f)
@@ -207,12 +207,12 @@ public class ST_TURRET {
 				.bullet()
 			);
 			ammoTypes.put(Items.pyratite, ST_BULLET.BULLET_MACHINE_GUN
-				.build(1400, ST_ITEM.GOLD_ELEMENT, 36, 10, 1.5f)
+				.build(1400, ST_ITEM.GOLD_ELEMENT, 36, 10, 1f)
 				.status(StatusEffects.burning)
 				.bullet()
 			);
 			ammoTypes.put(Items.blastCompound, ST_BULLET.BULLET_MACHINE_GUN
-				.build(1200, ST_ITEM.FIRE_ELEMENT, 36, 4, 2.5f)
+				.build(1200, ST_ITEM.FIRE_ELEMENT, 36, 4, 1.5f)
 				.frag(ST_BULLET.SHELL_EXPLODE, ST_ITEM.CHROMAL, 1, 0.5f, 3, 1)
 				.bullet()
 			);
@@ -237,7 +237,7 @@ public class ST_TURRET {
 			consumePower(1200 / 60f);
 			shootSound = Sounds.railgun;
 			requirements = ItemStack.with(ST_ITEM.SUPERCONDUCTOR, 100, ST_ITEM.NANOTUBE, 150, ST_ITEM.SUSPENDED, 50, ST_ITEM.METRYSTAl, 50, ST_ITEM.CHROMAL, 50);
-			shootType = ST_BULLET.BULLET_RAIL_GUN.build(2200 / 5f, ST_ITEM.METRYSTAl, 63, 1 / 5f, 1.5f).frag(ST_BULLET.SHELL_EXPLODE, ST_ITEM.METRYSTAl, 1, 0.2f, 4, 1).bullet();
+			shootType = ST_BULLET.BULLET_RAIL_GUN.build(3200 / 5f, ST_ITEM.METRYSTAl, 63, 1 / 5f, 1.5f).frag(ST_BULLET.SHELL_EXPLODE, ST_ITEM.METRYSTAl, 1, 0.2f, 4, 1).bullet();
 			inject(this, 2);
 		}};
 		CERTAIN_CANNON = new PowerTurret("CERTAIN_CANNON") {{
@@ -248,7 +248,7 @@ public class ST_TURRET {
 			shootEffect = Fx.lightningShoot;
 			requirements = ItemStack.with(ST_ITEM.NANOTUBE, 500, ST_ITEM.CHROMAL, 350, ST_ITEM.SUPERCONDUCTOR, 50, ST_ITEM.METRYSTAl, 50, ST_ITEM.ANTIMATTER, 10);
 			shootType = ST_BULLET.BULLET_ELEMENT
-				.build(600f / 4, ST_ITEM.WATER_ELEMENT, 46, 1f / 4, 1f)
+				.build(700f / 4, ST_ITEM.WATER_ELEMENT, 46, 1f / 4, 1f)
 				.frag(ST_BULLET.SHELL_LIGHT, ST_ITEM.WATER_ELEMENT, 4, 0.9f, 6f, 1)
 				.frag(ST_BULLET.SHELL_EXPLODE, ST_ITEM.WATER_ELEMENT, 1, 0.9f, 8f, 1)
 				.bullet();
@@ -263,28 +263,29 @@ public class ST_TURRET {
 			consumePower(1400 / 60f);
 			requirements = ItemStack.with(ST_ITEM.NANOTUBE, 500, ST_ITEM.CHROMAL, 350, ST_ITEM.SUPERCONDUCTOR, 50, ST_ITEM.METRYSTAl, 75, ST_ITEM.ANTIMATTER, 10);
 			shootType = ST_BULLET.BULLET_TRIANGLE
-				.build(1200, ST_ITEM.WATER_ELEMENT, 48, 24, 1f)
+				.build(1300, ST_ITEM.WATER_ELEMENT, 48, 24, 1f)
 				.frag(ST_BULLET.BULLET_ELEMENT_IMPACT, ST_ITEM.WATER_ELEMENT, 1, 1f, 2f, 0.5f)
 				.bullet();
 			inject(this, 2);
 		}};
 		//[T3]
 		LIGHT_CANNON = new ItemTurret("LIGHT_CANNON") {{
-			consumePower(3600 / 60f);
+			consumePower(24000 / 60f);
 			shootSound = Sounds.railgun;
 			shootEffect = Fx.lightningShoot;
 			size = 8;
 			range = 76 * 8;
 			requirements = ItemStack.with(
+				ST_ITEM.LIGHT_ELEMENT, 1,
 				ST_ITEM.NANOTUBE, 1200,
 				ST_ITEM.CHROMAL, 500,
 				ST_ITEM.SUPERCONDUCTOR, 400,
 				ST_ITEM.METRYSTAl, 150
 			);
-			ammoTypes.put(ST_ITEM.LIGHT_ELEMENT, ST_BULLET.LIGHT
-				.build(1600 / 4f, ST_ITEM.WATER_ELEMENT, 76, 1 / 4f, 4)
-				.frag(ST_BULLET.SHELL_LIGHT, ST_ITEM.LIGHT_ELEMENT, 20, 1, 18, 2)
-				.frag(ST_BULLET.SHELL_STAR, ST_ITEM.LIGHT_ELEMENT, 1, 1, 16, 2)
+			ammoTypes.put(ST_ITEM.GOLD_ELEMENT, ST_BULLET.LIGHT
+				.build(4200 / 4f, ST_ITEM.WATER_ELEMENT, 76, 1 / 4f, 4)
+				.frag(ST_BULLET.SHELL_LIGHT, ST_ITEM.LIGHT_ELEMENT, 20, 2, 18, 2)
+				.frag(ST_BULLET.SHELL_STAR, ST_ITEM.LIGHT_ELEMENT, 1, 2, 16, 2)
 				.frag(ST_BULLET.SHELL_EXPLODE, ST_ITEM.LIGHT_ELEMENT, 1, 3, 16, 1)
 				.frag(ST_BULLET.SHELL_LIGHTNING, ST_ITEM.WATER_ELEMENT, 1, 1, 5, 2f)
 				.bullet()
@@ -294,7 +295,7 @@ public class ST_TURRET {
 		AETHER_BLASTER = new ItemTurret("AETHER_BLASTER") {
 			{
 				drawer = new DrawTurretShadow();
-				consumePower(2400 / 60f);
+				consumePower(14000 / 60f);
 				ammoPerShot = 5;
 				size = 8;
 				range = 78 * 8;
@@ -307,62 +308,62 @@ public class ST_TURRET {
 					ST_ITEM.SUSPENDED, 150
 				);
 				ammoTypes.put(ST_ITEM.CHROMAL, ST_BULLET.BULLET_RAIL_GUN
-					.build(700f, ST_ITEM.CHROMAL, 75, 0.5f, 2.5f)
+					.build(900f, ST_ITEM.CHROMAL, 75, 0.5f, 2.5f)
 					.frag(ST_BULLET.SHELL_LIGHTNING, ST_ITEM.CHROMAL, 3, 0.2f, 3, 2f)
 					.bullet()
 				);
 				ammoTypes.put(ST_ITEM.ANTIMATTER, ST_BULLET.BULLET_RAIL_GUN
-					.build(860f, ST_ITEM.ANTIMATTER, 75, 0.5f, 2.5f)
+					.build(1260f, ST_ITEM.ANTIMATTER, 75, 0.5f, 2.5f)
 					.frag(ST_BULLET.SHELL_EXPLODE, ST_ITEM.GOLD_ELEMENT, 3, 0.2f, 3, 2f)
 					.bullet()
 				);
 				ammoTypes.put(Items.surgeAlloy, ST_BULLET.BULLET_RAIL_GUN
-					.build(500f, ST_ITEM.GOLD_ELEMENT, 75, 0.5f, 2.5f)
+					.build(800, ST_ITEM.GOLD_ELEMENT, 75, 0.5f, 2.5f)
 					.frag(ST_BULLET.SHELL_LIGHTNING, ST_ITEM.GOLD_ELEMENT, 3, 0.2f, 2, 2f)
 					.bullet()
 				);
 				ammoTypes.put(ST_ITEM.GOLD_ELEMENT, ST_BULLET.BULLET_RAIL_GUN
-					.build(1000f, ST_ITEM.GOLD_ELEMENT, 75, 0.5f, 2.5f)
+					.build(1200, ST_ITEM.GOLD_ELEMENT, 75, 0.5f, 2.5f)
 					.status(StatusEffects.shocked)
 					.frag(ST_BULLET.SHELL_LIGHT, ST_ITEM.GOLD_ELEMENT, 2, 1f, 8, 2f)
 					.frag(ST_BULLET.SHELL_LIGHTNING, ST_ITEM.GOLD_ELEMENT, 3, 1f, 4, 1f)
 					.bullet());
 				ammoTypes.put(ST_ITEM.WOOD_ELEMENT, ST_BULLET.BULLET_RAIL_GUN
-					.build(850f, ST_ITEM.WOOD_ELEMENT, 120, 0.5f, 2.5f)
+					.build(1150, ST_ITEM.WOOD_ELEMENT, 120, 0.5f, 2.5f)
 					.status(StatusEffects.corroded)
 					.frag(ST_BULLET.SHELL_LIGHT, ST_ITEM.FIRE_ELEMENT, 2, 1f, 8, 2f)
 					.frag(ST_BULLET.SHELL_LIGHTNING, ST_ITEM.FIRE_ELEMENT, 1, 0.1f, 8, 2f)
 					.bullet())
 				;
 				ammoTypes.put(ST_ITEM.WATER_ELEMENT, ST_BULLET.BULLET_RAIL_GUN
-					.build(750f, ST_ITEM.WATER_ELEMENT, 120, 0.5f, 2.5f)
+					.build(950, ST_ITEM.WATER_ELEMENT, 120, 0.5f, 2.5f)
 					.status(StatusEffects.wet)
 					.frag(ST_BULLET.SHELL_LIGHT, ST_ITEM.WATER_ELEMENT, 2, 1f, 8, 2f)
 					.frag(ST_BULLET.SHELL_LIGHTNING, ST_ITEM.WATER_ELEMENT, 1, 0.1f, 8, 2f)
 					.bullet()
 				);
 				ammoTypes.put(ST_ITEM.FIRE_ELEMENT, ST_BULLET.BULLET_RAIL_GUN
-					.build(900f, ST_ITEM.FIRE_ELEMENT, 120, 0.5f, 2.5f)
+					.build(1100, ST_ITEM.FIRE_ELEMENT, 120, 0.5f, 2.5f)
 					.status(StatusEffects.blasted)
 					.frag(ST_BULLET.SHELL_LIGHT, ST_ITEM.FIRE_ELEMENT, 2, 1f, 8, 2f)
 					.frag(ST_BULLET.SHELL_LIGHTNING, ST_ITEM.FIRE_ELEMENT, 1, 0.1f, 8, 2f)
 					.bullet()
 				);
 				ammoTypes.put(ST_ITEM.EARTH_ELEMENT, ST_BULLET.BULLET_RAIL_GUN
-					.build(700f, ST_ITEM.EARTH_ELEMENT, 120, 0.5f, 2.5f)
+					.build(1000, ST_ITEM.EARTH_ELEMENT, 120, 0.5f, 2.5f)
 					.status(StatusEffects.slow)
 					.frag(ST_BULLET.SHELL_LIGHT, ST_ITEM.EARTH_ELEMENT, 2, 1f, 8, 2f)
 					.frag(ST_BULLET.SHELL_LIGHTNING, ST_ITEM.EARTH_ELEMENT, 1, 0.1f, 8, 2f)
 					.bullet()
 				);
-				ammoTypes.put(ST_ITEM.LIGHT_ELEMENT, ST_BULLET.BULLET_RAIL_GUN.build(1800, ST_ITEM.LIGHT_ELEMENT, 120, 0.5f, 2.5f).vectorShock().status(StatusEffects.disarmed)
+				ammoTypes.put(ST_ITEM.LIGHT_ELEMENT, ST_BULLET.BULLET_RAIL_GUN.build(2500, ST_ITEM.LIGHT_ELEMENT, 120, 0.5f, 2.5f).vectorShock().status(StatusEffects.disarmed)
 					.frag(ST_BULLET.SHELL_LIGHT, ST_ITEM.LIGHT_ELEMENT, 2, 1f, 8, 2f)
 					.frag(ST_BULLET.SHELL_EXPLODE, ST_ITEM.LIGHT_ELEMENT, 1, 0.9f, 8f, 2)
 					.frag(ST_BULLET.SHELL_LIGHTNING, ST_ITEM.LIGHT_ELEMENT, 3, 0.8f, 8, 2f)
 					.bullet()
 				);
 				ammoTypes.put(ST_ITEM.DARK_ELEMENT, ST_BULLET.BULLET_RAIL_GUN
-					.build(1600, ST_ITEM.DARK_ELEMENT, 120, 0.5f, 2.5f).status(StatusEffects.wet)
+					.build(2500, ST_ITEM.DARK_ELEMENT, 120, 0.5f, 2.5f).status(StatusEffects.wet)
 					.frag(ST_BULLET.SHELL_LIGHT, ST_ITEM.DARK_ELEMENT, 2, 1f, 8, 2f)
 					.frag(ST_BULLET.SHELL_EXPLODE, ST_ITEM.DARK_ELEMENT, 1, 0.9f, 8f, 2)
 					.frag(ST_BULLET.SHELL_LIGHTNING, ST_ITEM.DARK_ELEMENT, 3, 0.8f, 8, 2f)
@@ -376,11 +377,11 @@ public class ST_TURRET {
 			ammoPerShot = 25;
 			range = 180 * 8;
 			size = 14;
-			consumePower(12000 / 60f);
+			consumePower(64000 / 60f);
 			shootSound = Sounds.railgun;
 			requirements = ItemStack.with(
-				ST_ITEM.LIGHT_ELEMENT, 50,
-				ST_ITEM.DARK_ELEMENT, 50,
+				ST_ITEM.LIGHT_ELEMENT, 5,
+				ST_ITEM.DARK_ELEMENT, 5,
 				ST_ITEM.NANOTUBE, 2500,
 				ST_ITEM.SUPERCONDUCTOR, 1000,
 				ST_ITEM.CHROMAL, 2000,
@@ -388,7 +389,7 @@ public class ST_TURRET {
 				ST_ITEM.METRYSTAl, 750
 			);
 			ammoTypes.put(ST_ITEM.LIGHT_ELEMENT, ST_BULLET.BULLET_RAIL_GUN
-				.build(7500, ST_ITEM.LIGHT_ELEMENT, 180, 0.3f, 4f)
+				.build(24000, ST_ITEM.LIGHT_ELEMENT, 180, 0.3f, 4f)
 				.status(StatusEffects.slow)
 				.status(StatusEffects.burning)
 				.frag(ST_BULLET.SHELL_IMPACT, ST_ITEM.LIGHT_ELEMENT, 1, 0.4f, 14, 3)
@@ -397,7 +398,7 @@ public class ST_TURRET {
 				.bullet()
 			);
 			ammoTypes.put(ST_ITEM.DARK_ELEMENT, ST_BULLET.BULLET_RAIL_GUN
-				.build(6000, ST_ITEM.DARK_ELEMENT, 180, 0.3f, 4f)
+				.build(22000, ST_ITEM.DARK_ELEMENT, 180, 0.3f, 4f)
 				.status(StatusEffects.corroded)
 				.frag(ST_BULLET.SHELL_IMPACT, ST_ITEM.DARK_ELEMENT, 1, 0.4f, 14, 3)
 				.status(StatusEffects.wet)

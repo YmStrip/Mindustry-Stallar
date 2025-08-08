@@ -20,6 +20,7 @@ public abstract class BlockIOUnitAbstract extends BlockIO<UnitType> {
 	public BlockIOUnitAbstract(String name) {
 		super(name);
 		acceptsPayload = true;
+		acceptsUnitPayloads = true;
 	}
 	@Override
 	protected UnitType getSelectFromName(String name) {
@@ -37,6 +38,7 @@ public abstract class BlockIOUnitAbstract extends BlockIO<UnitType> {
 	public abstract void addAmount(Building source, UnitType unit, float count);
 	public abstract float getAmount(Building source, UnitType unit);
 	public abstract float getCapacity(Building source, UnitType unit);
+	public abstract boolean canHandlePayload(Building self, Building source, Payload payload);
 	public class BlockIOUnitAbstractBuild extends BlockIOBuild {
 		public float progress = 0;
 		public float fraction() {
@@ -51,11 +53,13 @@ public abstract class BlockIOUnitAbstract extends BlockIO<UnitType> {
 		//input unit
 		@Override
 		public boolean acceptPayload(Building source, Payload payload) {
+			if (!canInput) return false;
+			if (!canHandlePayload(this, source, payload)) return false;
 			//must be unitType
 			if (!(payload instanceof UnitPayload unitPayload)) return false;
 			if (unitPayload.unit == null) return false;
-			//cannot input damaged
-			if (unitPayload.unit.health < unitPayload.unit.health * 0.8) return false;
+			//cannot input broken
+			//if (unitPayload.unit.health < unitPayload.unit.health * 0.8) return false;
 			if (getCapacity(this, unitPayload.unit.type) - getAmount(this, unitPayload.unit.type) < 1) {
 				removeBufferInput();
 				return false;
@@ -110,7 +114,7 @@ public abstract class BlockIOUnitAbstract extends BlockIO<UnitType> {
 			var units = data.getUnits(select);
 			if (units != null && data.unitCap - units.size < 1) {
 				removeProgress();
-				System.out.println("remove");
+				//System.out.println("remove");
 			}
 			addProgress();
 			if (progress >= 1) {

@@ -164,21 +164,21 @@ public class ST_ITEM {
 		LIGHT_ELEMENT = new Item("LIGHT_ELEMENT") {{
 			hardness = 42;
 			color = Color.rgb(148, 243, 243);
-			radioactivity = 4f;
-			explosiveness = 4f;
-			charge = 4f;
-			flammability = 4f;
-			cost = 4;
+			radioactivity = 0f;
+			explosiveness = 0f;
+			charge = 0f;
+			flammability = 0f;
+			cost = 1;
 			inject(this, 3);
 		}};
 		DARK_ELEMENT = new Item("DARK_ELEMENT") {{
 			hardness = 42;
 			color = Color.rgb(0, 0, 128);
-			radioactivity = 2.5f;
-			explosiveness = 2.5f;
-			charge = 2.5f;
-			flammability = 2.5f;
-			cost = 2.5f;
+			radioactivity = 0f;
+			explosiveness = 0f;
+			charge = 0f;
+			flammability = 0f;
+			cost = 1f;
 			inject(this, 3);
 		}};
 	}

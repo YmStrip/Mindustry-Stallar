@@ -127,7 +127,7 @@ public class ST_WALL {
 				ST_ITEM.DARK_ELEMENT, 6
 			));
 			size = 3;
-			health = 12000;
+			health = 80000;
 			insulated = true;
 			chanceDeflect = 10.0F;
 			absorbLasers = true;

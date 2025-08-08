@@ -61,7 +61,7 @@ public class ST_POWER {
 			inject(this, 1);
 		}};
 		OIL_GENERATOR = new ConsumeGenerator("OIL_GENERATOR") {{
-			requirements(Category.power, ItemStack.with(Items.copper, 150, Items.graphite, 150, Items.lead, 120, Items.metaglass, 100, Items.titanium, 60, Items.silicon, 50, Items.plastanium, 80));
+			requirements(Category.power, ItemStack.with(Items.copper, 300, Items.graphite, 300, Items.lead, 150, Items.metaglass, 150, Items.titanium, 125, Items.silicon, 150, Items.plastanium, 150));
 			size = 2;
 			powerProduction = 720 / 60f;
 			ambientSound = Sounds.smelter;
@@ -73,7 +73,7 @@ public class ST_POWER {
 		}};
 		PHASE_FABRIC_GENERATOR = new ConsumeGenerator("PHASE_FABRIC_GENERATOR") {{
 			requirements(Category.power, ItemStack.with(Items.lead, 250, Items.metaglass, 50, Items.graphite, 100, Items.silicon, 50));
-			size = 3;
+			size = 2;
 			powerProduction = 1800 / 60f;
 			itemDuration = 180f;
 			ambientSound = Sounds.smelter;
@@ -90,10 +90,10 @@ public class ST_POWER {
 				Items.lead, 350,
 				Items.titanium, 250,
 				Items.silicon, 250,
-				Items.graphite, 150,
+				Items.graphite, 250,
 				Items.metaglass, 200
 			));
-			powerProduction = 280 / 60f;
+			powerProduction = 180 / 60f;
 			generateEffect = Fx.redgeneratespark;
 			effectChance = 0.011f;
 			size = 2;
@@ -122,7 +122,7 @@ public class ST_POWER {
 			itemDuration = 60f * 8;
 			ambientSound = Sounds.pulse;
 			ambientSoundVolume = 0.07f;
-			consumePower(60 / 60f);
+			//consumePower(60 / 60f);
 			//consumeLiquid(Liquids.water, 0.25f);
 			drawer = new DrawMulti(new DrawPlasma(), new DrawDefault(), new DrawWarmupRegion());
 			requirements = ItemStack.with(
@@ -136,19 +136,20 @@ public class ST_POWER {
 			health = 1500;
 			canOverdrive = false;
 			size = 4;
-			powerProduction = 12000 / 60f;
+			powerProduction = 128000 / 60f;
 			ambientSound = Sounds.pulse;
 			ambientSoundVolume = 0.07f;
-			consumePower(600 / 60f);
-			consumeLiquid(Liquids.water, 2f);
+			consumePower(2400 / 60f);
+			consumeLiquid(Liquids.water, 180 / 60f);
 			drawer = new DrawMulti(new DrawPlasma(), new DrawDefault(), new DrawWarmupRegion());
 			requirements = ItemStack.with(
-				ST_ITEM.NANOTUBE, 150,
-				ST_ITEM.SUPERCONDUCTOR, 200,
-				ST_ITEM.CHROMAL, 350,
-				ST_ITEM.SUSPENDED, 50,
-				ST_ITEM.METRYSTAl, 50,
-				Items.metaglass, 250
+				ST_ITEM.NANOTUBE, 250,
+				ST_ITEM.SUPERCONDUCTOR, 300,
+				ST_ITEM.CHROMAL, 450,
+				ST_ITEM.SUSPENDED, 250,
+				ST_ITEM.METRYSTAl, 250,
+				Items.metaglass, 250,
+				Items.graphite, 500
 			);
 			inject(this, 2);
 		}};
@@ -186,12 +187,11 @@ public class ST_POWER {
 		ELEMENT_REACTOR = new ImpactReactor("ELEMENT_REACTOR") {{
 			health = 6000;
 			size = 4;
-			powerProduction = 64000 * 5 / 60f;
+			powerProduction = 180000 * 5 / 60f;
 			consumePower(1024 / 60f);
-			itemDuration = 60f * 8;
+			itemDuration = 60f * 12;
 			ambientSound = Sounds.smelter;
 			ambientSoundVolume = 0.03f;
-			drawer = new DrawMulti(new DrawDefault(), new DrawWarmupRegion());
 			drawer = new DrawMulti(new DrawPlasma(), new DrawDefault(), new DrawWarmupRegion());
 			requirements = ItemStack.with(
 				ST_ITEM.CHROMAL, 300,
@@ -209,8 +209,8 @@ public class ST_POWER {
 		}};
 		VACUUM_MATRIX = new ThermalGenerator("VACUUM_MATRIX") {{
 			health = 6000;
-			canOverdrive = true;
-			powerProduction = 2400 / 60f;
+			canOverdrive = false;
+			powerProduction = 256000 / 60f;
 			generateEffect = Fx.redgeneratespark;
 			effectChance = 0.011f;
 			size = 1;
@@ -218,8 +218,8 @@ public class ST_POWER {
 			ambientSound = Sounds.hum;
 			ambientSoundVolume = 0.06f;
 			requirements = ItemStack.with(
-				ST_ITEM.LIGHT_ELEMENT, 25,
-				ST_ITEM.DARK_ELEMENT, 25,
+				ST_ITEM.LIGHT_ELEMENT, 10,
+				ST_ITEM.DARK_ELEMENT, 10,
 				ST_ITEM.ANTIMATTER, 50,
 				ST_ITEM.CHROMAL, 250
 			);
@@ -229,11 +229,11 @@ public class ST_POWER {
 		VACUUM_BATTERY = new Battery("VACUUM_BATTERY") {{
 			health = 10000;
 			size = 1;
-			consumePowerBuffered(150000000f);
+			consumePowerBuffered(500000000f);
 			baseExplosiveness = 0f;
 			requirements = ItemStack.with(
-				ST_ITEM.LIGHT_ELEMENT, 3,
-				ST_ITEM.DARK_ELEMENT, 3,
+				ST_ITEM.LIGHT_ELEMENT, 1,
+				ST_ITEM.DARK_ELEMENT, 1,
 				ST_ITEM.ANTIMATTER, 5,
 				ST_ITEM.CHROMAL, 50
 			);

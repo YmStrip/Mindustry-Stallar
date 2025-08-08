@@ -67,12 +67,13 @@ public class ST_FUNCTIONAL {
 			inject(this, 1);
 		}};
 		NANO_CORE = new SCore("NANO_CORE") {{
-			isFirstTier = true;
+			alwaysUnlocked = false;
+			isFirstTier = false;
 			replaceable = false;
 			itemCapacity = 6000;
 			unitCapModifier = 3;
 			maxCore = 4;
-			size = 4;
+			size = 3;
 			researchCostMultiplier = 0.25f;
 			requirements = ItemStack.with(
 				ST_ITEM.NANOTUBE, 1000,
@@ -84,8 +85,8 @@ public class ST_FUNCTIONAL {
 			inject(this, 1);
 		}};
 		MATRIX_CORE = new SCore("MATRIX_CORE") {{
-			alwaysUnlocked = true;
-			isFirstTier = true;
+			alwaysUnlocked = false;
+			isFirstTier = false;
 			replaceable = false;
 			itemCapacity = 12000;
 			maxCore = 6;
@@ -104,8 +105,8 @@ public class ST_FUNCTIONAL {
 			inject(this, 2);
 		}};
 		AETHER_CORE = new SCore("AETHER_CORE") {{
-			alwaysUnlocked = true;
-			isFirstTier = true;
+			alwaysUnlocked = false;
+			isFirstTier = false;
 			itemCapacity = 12000;
 			unitCapModifier = 3;
 			replaceable = false;
@@ -170,8 +171,7 @@ public class ST_FUNCTIONAL {
 			inject(this, 1);
 		}};*/
 		MATRIX_MEND_PROJECTOR = new MendProjector("MATRIX_MEND_PROJECTOR") {{
-			consumePower(10f);
-			consumePower(8f);
+			consumePower(800f / 60f);
 			reload = 180f;
 			range = 28 * 8f;
 			healPercent = 15f;
@@ -189,8 +189,7 @@ public class ST_FUNCTIONAL {
 			inject(this, 2);
 		}};
 		MATRIX_OVERDRIVE_PROJECTOR = new OverdriveProjector("MATRIX_OVERDRIVE_PROJECTOR") {{
-			consumePower(10f);
-			consumePower(8f);
+			consumePower(1200f / 60f);
 			range = 28 * 8f;
 			size = 2;
 			speedBoostPhase = 0.5f;
@@ -210,7 +209,7 @@ public class ST_FUNCTIONAL {
 			inject(this, 2);
 		}};
 		MATRIX_FORCE_FIELD = new SForceProjector("MATRIX_FORCE_FIELD") {{
-			consumePower(8f);
+			consumePower(800f / 60f);
 			canOverdrive = false;
 			size = 2;
 			radius = 20 * 8;
@@ -233,13 +232,13 @@ public class ST_FUNCTIONAL {
 		}};
 		BLACK_HOLE_DRIVE = new StorageBlock("BLACK_HOLE_DRIVE") {{
 			size = 1;
-			itemCapacity = 60000;
+			itemCapacity = 64000;
 			scaledHealth = 55;
 			requirements = ItemStack.with(
 				ST_ITEM.CHROMAL, 250,
 				ST_ITEM.SUPERCONDUCTOR, 150,
 				ST_ITEM.METRYSTAl, 50,
-				ST_ITEM.DARK_ELEMENT, 3
+				ST_ITEM.DARK_ELEMENT, 5
 			);
 			inject(this, 3);
 		}};

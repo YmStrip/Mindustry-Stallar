@@ -6,14 +6,12 @@ import mindustry.type.Item;
 import st.mod.util.STechBuilder;
 
 
-
-
 public class ST_TECH {
-	public static STechBuilder createTechNode(UnlockableContent item) {
-		return new STechBuilder(item);
+	public static STechBuilder createTechNode(UnlockableContent item, UnlockableContent parent) {
+		return new STechBuilder(item).parent(parent);
 	}
 	public static STechBuilder createTechNodeRoot(UnlockableContent item) {
-		return new STechBuilder(item).parent(WELCOME);
+		return createTechNode(item, WELCOME);
 	}
 	public static UnlockableContent WELCOME;
 	public static TechTree.TechNode ROOT;

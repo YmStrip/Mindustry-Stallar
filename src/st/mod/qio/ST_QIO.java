@@ -54,8 +54,8 @@ public class ST_QIO {
 				ST_ITEM.CHROMAL, 300,
 				ST_ITEM.SUPERCONDUCTOR, 150,
 				ST_ITEM.METRYSTAl, 100,
-				ST_ITEM.LIGHT_ELEMENT, 25,
-				ST_ITEM.DARK_ELEMENT, 25,
+				ST_ITEM.LIGHT_ELEMENT, 5,
+				ST_ITEM.DARK_ELEMENT, 5,
 				ST_ITEM.ANTIMATTER, 100
 			));
 			canOverdrive = false;
@@ -66,8 +66,8 @@ public class ST_QIO {
 			canOutput = true;
 			canSelect = true;
 			maxPlace = 8;
-			speedInput = 1024;
-			speedOutput = 512;
+			speedInput = bufferInputMax = 4096;
+			speedOutput = bufferOutputMax = 1024;
 			consumePower(16000 / 60f);
 			inject(this, 3);
 		}};
@@ -76,8 +76,8 @@ public class ST_QIO {
 				ST_ITEM.CHROMAL, 300,
 				ST_ITEM.SUPERCONDUCTOR, 150,
 				ST_ITEM.METRYSTAl, 100,
-				ST_ITEM.LIGHT_ELEMENT, 25,
-				ST_ITEM.DARK_ELEMENT, 25,
+				ST_ITEM.LIGHT_ELEMENT, 5,
+				ST_ITEM.DARK_ELEMENT, 5,
 				ST_ITEM.ANTIMATTER, 100
 			));
 			canOverdrive = false;
@@ -87,8 +87,8 @@ public class ST_QIO {
 			canOutput = true;
 			canSelect = true;
 			maxPlace = 8;
-			speedInput = 256 * 60;
-			speedOutput = 128 * 60;
+			speedInput = bufferInputMax = 1024 * 60;
+			speedOutput = bufferOutputMax = 256 * 60;
 			consumePower(16000 / 60f);
 			inject(this, 3);
 		}};
@@ -98,19 +98,21 @@ public class ST_QIO {
 				ST_ITEM.SUPERCONDUCTOR, 250,
 				ST_ITEM.SUSPENDED, 450,
 				ST_ITEM.METRYSTAl, 150,
-				ST_ITEM.LIGHT_ELEMENT, 50,
-				ST_ITEM.DARK_ELEMENT, 50,
+				ST_ITEM.LIGHT_ELEMENT, 10,
+				ST_ITEM.DARK_ELEMENT, 10,
 				ST_ITEM.ANTIMATTER, 250
 			));
 			canOverdrive = false;
 			color = Color.green;
-			size = 12;
+			size = 14;
 			canInput = true;
 			canOutput = true;
 			canSelect = true;
 			maxPlace = 8;
-			speedInput = 4 / 60f;
-			speedOutput = 4 / 60f;
+			speedInput = 1;
+			bufferInputMax = 1;
+			speedOutput = 1 / 4f;
+			bufferOutputMax = 1;
 			consumePower(64000 / 60f);
 			inject(this, 3);
 		}};

@@ -1,6 +1,7 @@
 package st.mod.distribution;
 
 
+import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
@@ -47,9 +48,10 @@ public class ST_DISTRIBUTION {
 		//ts: o(maxPlace * n + c) + s(c)
 		LIQUID_BUFFER = new BlockLiquidBuffer("LIQUID_BUFFER") {{
 			requirements(Category.liquid, ItemStack.with(
-				ST_ITEM.CHROMAL, 150,
-				ST_ITEM.ANTIMATTER, 5,
-				ST_ITEM.METRYSTAl, 25
+				ST_ITEM.CHROMAL, 50,
+				ST_ITEM.ANTIMATTER, 1,
+				ST_ITEM.NANOTUBE, 50,
+				Items.metaglass, 50
 			));
 			size = 2;
 			maxPlace = 4;
@@ -70,7 +72,7 @@ public class ST_DISTRIBUTION {
 		//
 		ITEM_INPUT = new BlockIOItem("ITEM_INPUT") {{
 			canInput = true;
-			speedInput = 8;
+			speedInput = bufferInputMax = 8;
 			requirements(Category.distribution, ItemStack.with(
 				ST_ITEM.CHROMAL, 1,
 				ST_ITEM.ANTIMATTER, 1
@@ -79,7 +81,7 @@ public class ST_DISTRIBUTION {
 		}};
 		ITEM_OUTPUT = new BlockIOItem("ITEM_OUTPUT") {{
 			canOutput = true;
-			speedOutput = 8;
+			speedOutput = bufferOutputMax = 8;
 			canSelect = true;
 			requirements(Category.distribution, ItemStack.with(
 				ST_ITEM.CHROMAL, 1,
@@ -90,8 +92,8 @@ public class ST_DISTRIBUTION {
 		ITEM_IO = new BlockIOItem("ITEM_IO") {{
 			canOutput = true;
 			canInput = true;
-			speedInput = 9;
-			speedOutput = 9;
+			speedInput = bufferInputMax = 9;
+			speedOutput = bufferOutputMax = 9;
 			canSelect = true;
 			requirements(Category.distribution, ItemStack.with(
 				ST_ITEM.CHROMAL, 3,
@@ -101,7 +103,7 @@ public class ST_DISTRIBUTION {
 		}};
 		//
 		ITEM_INPUT_EXTRA = new BlockIOItem("ITEM_INPUT_EXTRA") {{
-			speedInput = 72;
+			speedInput = bufferInputMax = 84;
 			canInput = true;
 			requirements(Category.distribution, ItemStack.with(
 				ST_ITEM.DARK_ELEMENT, 1,
@@ -113,7 +115,7 @@ public class ST_DISTRIBUTION {
 		ITEM_OUTPUT_EXTRA = new BlockIOItem("ITEM_OUTPUT_EXTRA") {{
 			canInput = true;
 			canSelect = true;
-			speedOutput = 72;
+			speedOutput = bufferOutputMax = 84;
 			requirements(Category.distribution, ItemStack.with(
 				ST_ITEM.DARK_ELEMENT, 1,
 				ST_ITEM.LIGHT_ELEMENT, 1,
@@ -124,8 +126,8 @@ public class ST_DISTRIBUTION {
 		ITEM_IO_EXTRA = new BlockIOItem("ITEM_IO_EXTRA") {{
 			canOutput = true;
 			canInput = true;
-			speedInput = 80;
-			speedOutput = 80;
+			speedInput = bufferInputMax = 96;
+			speedOutput = bufferOutputMax = 96;
 			canSelect = true;
 			requirements(Category.distribution, ItemStack.with(
 				ST_ITEM.DARK_ELEMENT, 3,
@@ -137,7 +139,7 @@ public class ST_DISTRIBUTION {
 		//
 		LIQUID_INPUT = new BlockIOLiquid("LIQUID_INPUT") {{
 			canInput = true;
-			speedInput = 60;
+			speedInput = bufferInputMax = 60;
 			requirements(Category.liquid, ItemStack.with(
 				ST_ITEM.ANTIMATTER, 1,
 				ST_ITEM.CHROMAL, 1
@@ -147,7 +149,7 @@ public class ST_DISTRIBUTION {
 		LIQUID_OUTPUT = new BlockIOLiquid("LIQUID_OUTPUT") {{
 			canOutput = true;
 			canSelect = true;
-			speedOutput = 60;
+			speedOutput = bufferOutputMax = 60;
 			requirements(Category.liquid, ItemStack.with(
 				ST_ITEM.ANTIMATTER, 1,
 				ST_ITEM.CHROMAL, 1
@@ -158,8 +160,8 @@ public class ST_DISTRIBUTION {
 			canInput = true;
 			canOutput = true;
 			canSelect = true;
-			speedInput = 60;
-			speedOutput = 60;
+			speedInput = bufferInputMax = 60;
+			speedOutput = bufferOutputMax = 60;
 			requirements(Category.liquid, ItemStack.with(
 				ST_ITEM.ANTIMATTER, 3,
 				ST_ITEM.CHROMAL, 3
@@ -169,7 +171,7 @@ public class ST_DISTRIBUTION {
 		//
 		LIQUID_INPUT_EXTRA = new BlockIOLiquid("LIQUID_INPUT_EXTRA") {{
 			canInput = true;
-			speedInput = 540;
+			speedInput = bufferInputMax = 7200;
 			requirements(Category.liquid, ItemStack.with(
 				ST_ITEM.LIGHT_ELEMENT, 1,
 				ST_ITEM.DARK_ELEMENT, 1,
@@ -180,7 +182,7 @@ public class ST_DISTRIBUTION {
 		LIQUID_OUTPUT_EXTRA = new BlockIOLiquid("LIQUID_OUTPUT_EXTRA") {{
 			canOutput = true;
 			canSelect = true;
-			speedOutput = 540;
+			speedOutput = bufferOutputMax = 7200;
 			requirements(Category.liquid, ItemStack.with(
 				ST_ITEM.LIGHT_ELEMENT, 1,
 				ST_ITEM.DARK_ELEMENT, 1,
@@ -192,8 +194,8 @@ public class ST_DISTRIBUTION {
 			canInput = true;
 			canOutput = true;
 			canSelect = true;
-			speedInput = 600;
-			speedOutput = 600;
+			speedInput = bufferInputMax = 8000;
+			speedOutput = bufferOutputMax = 8000;
 			requirements(Category.liquid, ItemStack.with(
 				ST_ITEM.LIGHT_ELEMENT, 3,
 				ST_ITEM.DARK_ELEMENT, 3,

@@ -8,6 +8,7 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.type.UnitType;
 import mindustry.world.Tile;
+import mindustry.world.blocks.payloads.Payload;
 import st.ST;
 import st.mod.distribution.unit.BlockIOUnitAbstract;
 import st.mod.qio.STORE_QIO;
@@ -46,6 +47,10 @@ public class BlockQIOUnitInterface extends BlockIOUnitAbstract {
 	public float getCapacity(Building source, UnitType unit) {
 		return STORE_QIO.NETWORK.UNIT.capacity;
 	}
+	@Override
+	public boolean canHandlePayload(Building self, Building source, Payload payload) {
+		return !(source instanceof BlockQIOUnitInterfaceBuild);
+	}
 	public class BlockQIOUnitInterfaceBuild extends BlockIOUnitAbstractBuild {
 		@Override
 		public void placed() {
@@ -59,8 +64,8 @@ public class BlockQIOUnitInterface extends BlockIOUnitAbstract {
 		}
 		public DrawQIO draw = new DrawQIO() {{
 			color = BlockQIOUnitInterface.this.color;
-			shieldRange = 12 * 8f;
-			drawBlackHole.radius = 0.6f * 8;
+			shieldRange = 18 * 8f;
+			drawBlackHole.radius = 1.3f * 8;
 			drawBlackHole.colorParticle = BlockQIOUnitInterface.this.color;
 		}};
 		@Override

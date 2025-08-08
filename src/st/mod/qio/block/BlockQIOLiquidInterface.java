@@ -47,6 +47,10 @@ public class BlockQIOLiquidInterface extends BlockIOLiquidAbstract {
 	public void addAmount(Building building, Liquid liquid, float amount) {
 		STORE_QIO.NETWORK.LIQUID.add(liquid.name, amount);
 	}
+	@Override
+	public boolean canHandleLiquid(Building self, Building source, Liquid liquid) {
+		return !(source instanceof BlockQIOLiquidInterfaceBuild);
+	}
 	public class BlockQIOLiquidInterfaceBuild extends BlockIOLiquidAbstractBuild {
 		@Override
 		public void placed() {
@@ -66,19 +70,18 @@ public class BlockQIOLiquidInterface extends BlockIOLiquidAbstract {
 		@Override
 		public void updateTile() {
 			draw.tick(this);
-			super.updateTile();
 			if (select == null) return;
-			//output to nearby first
-			outputToBuild(getProximityBuilding(building -> building.acceptLiquid(this, select)));
-			//after output to buffers
-			{
-				var bufferCapacity = STORE_LIQUID_BUFFER.BUILD.getCapacity(this, select);
-				var bufferAmount = STORE_LIQUID_BUFFER.BUILD.getAmount(this, select);
-				var maxCanTaken = Math.min(Math.min(bufferOutput, bufferCapacity - bufferAmount), getAmount(this, select));
-				if (maxCanTaken <= 0) return;
+			var bufferCapacity = STORE_LIQUID_BUFFER.BUILD.getCapacity(this, select);
+			var bufferAmount = STORE_LIQUID_BUFFER.BUILD.getAmount(this, select);
+			var amount = getAmount(this, select);
+			if (amount > 0 && bufferCapacity - bufferAmount > 0) addBufferOutput();
+			var maxCanTaken = Math.min(Math.min(bufferOutput, bufferCapacity - bufferAmount), amount);
+			if (maxCanTaken > 0) {
 				bufferOutput -= maxCanTaken;
 				addAmount(this, select, -maxCanTaken);
 				STORE_LIQUID_BUFFER.BUILD.addAmount(this, select, maxCanTaken);
+			} else {
+				super.updateTile();
 			}
 		}
 		@Override

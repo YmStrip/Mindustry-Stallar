@@ -152,8 +152,8 @@ public class ST_PRODUCT {
 			hasPower = true;
 			consumePower(3f);
 			requirements = ItemStack.with(ST_ITEM.NANOTUBE, 50, ST_ITEM.SUPERCONDUCTOR, 50, Items.silicon, 50, Items.coal, 50);
-			consumeItems(ItemStack.with(Items.coal, 3));
-			outputItem = new ItemStack(Items.graphite, 2);
+			consumeItems(ItemStack.with(Items.coal, 1));
+			outputItem = new ItemStack(Items.graphite, 1);
 			inject(this, 1);
 		}};
 		SUPER_PYRATITE_FACTORY = new GenericCrafter("SUPER_PYRATITE_FACTORY") {{
@@ -205,6 +205,7 @@ public class ST_PRODUCT {
 				Items.silicon, 50,
 				Items.metaglass, 50
 			);
+			itemCapacity = 16;
 			size = 4;
 			craftTime = 360f;
 			craftEffect = Fx.smeltsmoke;
@@ -220,6 +221,7 @@ public class ST_PRODUCT {
 			craftEffect = Fx.smeltsmoke;
 			hasPower = true;
 			consumePower(8f);
+			itemCapacity = 16;
 			requirements = ItemStack.with(
 				ST_ITEM.NANOTUBE, 200,
 				ST_ITEM.SUPERCONDUCTOR, 75,
@@ -310,7 +312,7 @@ public class ST_PRODUCT {
 		}};
 		EARTH_ELEMENT_FACTORY = new ElementFactory("EARTH_ELEMENT_FACTORY") {{
 			consumeItems(ItemStack.with(ST_ITEM.ANTIMATTER, 2, Items.sand, 1));
-			outputItem = new ItemStack(ST_ITEM.WOOD_ELEMENT, 1);
+			outputItem = new ItemStack(ST_ITEM.EARTH_ELEMENT, 1);
 			consumeLiquid(Liquids.oil, 1);
 			inject(this, 3);
 		}};
@@ -318,8 +320,9 @@ public class ST_PRODUCT {
 			size = 5;
 			craftTime = 30;
 			craftEffect = Fx.smeltsmoke;
+			itemCapacity = 12;
 			hasPower = true;
-			consumePower(20f);
+			consumePower(640000 / 60f);
 			requirements = ItemStack.with(
 				ST_ITEM.CHROMAL, 300,
 				ST_ITEM.NANOTUBE, 50,
@@ -329,21 +332,21 @@ public class ST_PRODUCT {
 				ST_ITEM.ANTIMATTER, 50
 			);
 			consumeItems(with(
-				ST_ITEM.GOLD_ELEMENT, 12,
-				ST_ITEM.WOOD_ELEMENT, 12,
-				ST_ITEM.WATER_ELEMENT, 12,
-				ST_ITEM.FIRE_ELEMENT, 12,
-				ST_ITEM.WOOD_ELEMENT, 12
+				ST_ITEM.GOLD_ELEMENT, 1,
+				ST_ITEM.WOOD_ELEMENT, 1,
+				ST_ITEM.WATER_ELEMENT, 1,
+				ST_ITEM.FIRE_ELEMENT, 1,
+				ST_ITEM.EARTH_ELEMENT, 1
 			));
 			outputLiquid = new LiquidStack(ST_LIQUID.NANO_FLUID, 1);
 			inject(this, 3);
 		}};
 		DARK_ELEMENT_FACTORY = new GenericCrafter("DARK_ELEMENT_FACTORY") {{
 			size = 8;
-			craftTime = 60;
+			craftTime = 60 * 4f;
 			craftEffect = Fx.smeltsmoke;
 			hasPower = true;
-			consumePower(128000 / 60f);
+			consumePower(8.65f * 1000f * 1000f / 8f / 60f);
 			requirements = ItemStack.with(
 				ST_ITEM.NANOTUBE, 250,
 				ST_ITEM.CHROMAL, 150,
@@ -353,15 +356,15 @@ public class ST_PRODUCT {
 				ST_ITEM.SUSPENDED, 50
 			);
 			outputItem = new ItemStack(ST_ITEM.DARK_ELEMENT, 1);
-			consumeLiquid(ST_LIQUID.NANO_FLUID, 1);
+			consumeLiquid(ST_LIQUID.NANO_FLUID, 1 / 4f);
 			inject(this, 3);
 		}};
 		LIGHT_ELEMENT_FACTORY = new GenericCrafter("LIGHT_ELEMENT_FACTORY") {{
 			size = 8;
-			craftTime = 60;
+			craftTime = 60 * 4f;
 			craftEffect = Fx.smeltsmoke;
 			hasPower = true;
-			consumePower(128000 / 60f);
+			consumePower(8.65f * 1000f * 1000f / 8f / 60f);
 			requirements = ItemStack.with(
 				ST_ITEM.CHROMAL, 250,
 				ST_ITEM.SUPERCONDUCTOR, 150,
@@ -369,7 +372,7 @@ public class ST_PRODUCT {
 				ST_ITEM.ANTIMATTER, 100
 			);
 			outputItem = new ItemStack(ST_ITEM.LIGHT_ELEMENT, 1);
-			consumeLiquid(ST_LIQUID.NANO_FLUID, 1);
+			consumeLiquid(ST_LIQUID.NANO_FLUID, 1 / 4f);
 			inject(this, 3);
 		}};
 	}

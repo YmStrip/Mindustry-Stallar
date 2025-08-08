@@ -32,4 +32,8 @@ public class BlockIOItem extends BlockIOItemAbstract {
 		core.itemTaken(item);
 		core.items.remove(item, 1);
 	}
+	@Override
+	public boolean canHandleItem(Building self, Building source, Item item) {
+		return !(source instanceof BlockIOItemAbstractBuild);
+	}
 }

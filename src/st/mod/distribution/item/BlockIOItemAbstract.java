@@ -23,6 +23,7 @@ public abstract class BlockIOItemAbstract extends BlockIO<Item> {
 	protected abstract float getCapacity(Building building, Item item);
 	protected abstract void addAmount(Building building, Item item);
 	protected abstract void removeAmount(Building building, Item item);
+	public abstract boolean canHandleItem(Building self, Building source, Item item);
 	public boolean destroyItem = true;
 
 	public class BlockIOItemAbstractBuild extends BlockIOBuild {
@@ -31,24 +32,27 @@ public abstract class BlockIOItemAbstract extends BlockIO<Item> {
 		public void updateTile() {
 			super.updateTile();
 			if (select == null) return;
-			this.outputToBuild( getProximityBuilding(building -> building.acceptItem(this, select)));
+			this.outputToBuild(getProximityBuilding(building -> building.acceptItem(this, select)));
 		}
-		public void outputToBuild(@Nullable  Building target) {
+		public void outputToBuild(@Nullable Building target) {
 			if (target == null) return;
 			addBufferOutput();
 			while (bufferOutput > 1) {
 				bufferOutput--;
-				if (target.acceptItem(this, select)) {
-					if (getAmount(this, select) > 1) {
-						removeAmount(this, select);
-						target.handleItem(target, select);
-					}
+				if (target.acceptItem(this, select) && getAmount(this, select) > 1) {
+					removeAmount(this, select);
+					target.handleItem(target, select);
+				} else {
+					bufferOutput /= 2;
+					break;
 				}
 			}
 		}
 		//input
 		@Override
 		public boolean acceptItem(Building source, Item item) {
+			if (!canInput) return false;
+			if (!canHandleItem(this, source, item)) return false;
 			this.addBufferInput();
 			if (bufferInput < 1 || source.team != team) return false;
 			return destroyItem || getCapacity(source, item) - getAmount(source, item) >= 1;
@@ -58,7 +62,7 @@ public abstract class BlockIOItemAbstract extends BlockIO<Item> {
 			this.addBufferInput();
 			if (bufferInput < 1) return;
 			bufferInput--;
-			if (getCapacity(source, item) - getAmount(source, item) < 1) return;
+			if (!destroyItem && getCapacity(source, item) - getAmount(source, item) < 1) return;
 			addAmount(source, item);
 		}
 	}

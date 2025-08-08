@@ -1,6 +1,7 @@
 package st.mod.util;
 
 import arc.Events;
+import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -8,11 +9,19 @@ import mindustry.gen.Building;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class SBuildMap<T extends Building> {
+public abstract class SBuildMap<T extends Building> {
 	public HashMap<Team, HashSet<T>> builds = new HashMap<>();
 	public SBuildMap() {
-		Events.on(EventType.WorldLoadEndEvent.class, e -> builds.clear());
+		Events.on(EventType.WorldLoadEndEvent.class, e -> {
+			builds.clear();
+			Vars.world.tiles.eachTile(tile -> {
+				if (tile.build == null) return;
+				if (!testBuild(tile.build)) return;
+				add((T) tile.build);
+			});
+		});
 	}
+	public abstract boolean testBuild(Building build);
 	public void add(T building) {
 		builds.computeIfAbsent(building.team, k -> new HashSet<>());
 		builds.get(building.team).add(building);

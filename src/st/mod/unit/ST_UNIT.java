@@ -2,8 +2,11 @@ package st.mod.unit;
 
 
 import arc.graphics.Color;
+import mindustry.ai.UnitCommand;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
+import mindustry.content.UnitTypes;
+import mindustry.entities.Units;
 import mindustry.entities.abilities.EnergyFieldAbility;
 import mindustry.entities.abilities.MoveLightningAbility;
 import mindustry.entities.abilities.UnitSpawnAbility;
@@ -55,12 +58,14 @@ public class ST_UNIT {
 			armor = 4;
 			flying = true;
 			speed = 22 / 8f;
-			buildSpeed = 4;
+			buildSpeed = 5;
 			itemCapacity = 120;
 			mineTier = 2;
-			mineSpeed = 2;
+			mineSpeed = 1;
 			hitSize = 2 * 8;
+			defaultCommand = UnitCommand.assistCommand;
 			weapons.add(new SWeapon(ST_WEAPON.SPRITE_LASER) {{
+				displayDraw = false;
 				x = 1;
 				y = 1;
 				bullet(
@@ -79,9 +84,11 @@ public class ST_UNIT {
 			speed = 20f / 8f;
 			itemCapacity = 240;
 			mineTier = 3;
-			mineSpeed = 4;
+			mineSpeed = 5;
 			hitSize = 2 * 8;
+			defaultCommand = UnitCommand.mineCommand;
 			weapons.add(new SWeapon(ST_WEAPON.SPRITE_LASER) {{
+				displayDraw = false;
 				x = 1;
 				y = 1;
 				bullet(
@@ -103,6 +110,7 @@ public class ST_UNIT {
 			weapons.add(new SWeapon(ST_WEAPON.SPRITE_LASER_BIG) {{
 				x = 0;
 				y = 5;
+				displayDraw = false;
 				bullet(
 					ST_BULLET.BULLET_MACHINE_GUN
 						.build(20, ST_ITEM.SUPERCONDUCTOR, 26, 10, 0.4f)
@@ -113,6 +121,7 @@ public class ST_UNIT {
 			weapons.add(new SWeapon(ST_WEAPON.SPRITE_MISSILE) {{
 				x = 0;
 				y = 0;
+				displayDraw = false;
 				bullet(
 					ST_BULLET.BULLET_MISSILE
 						.build(40, ST_ITEM.SUPERCONDUCTOR, 26, 0.5f, 0.5f)
@@ -127,14 +136,16 @@ public class ST_UNIT {
 			armor = 1;
 			flying = true;
 			speed = 40 / 8f;
-			buildSpeed = 8;
+			buildSpeed = 10;
 			itemCapacity = 300;
 			mineTier = 4;
 			mineSpeed = 4;
 			hitSize = 2 * 8;
+			defaultCommand = UnitCommand.assistCommand;
 			weapons.add(new SWeapon(ST_WEAPON.SPRITE_TURBO_LASER) {{
 				x = 0;
 				y = 0;
+				displayDraw = false;
 				bullet = ST_BULLET.BULLET_RAIL_GUN
 					.build(80, Color.green, 36, 1, 0.5f)
 					.frag(ST_BULLET.BULLET_ELEMENT_IMPACT, ST_ITEM.WOOD_ELEMENT, 1, 0.8f, 6, 0.5f)
@@ -149,10 +160,12 @@ public class ST_UNIT {
 			speed = 40 / 8f;
 			buildSpeed = -1;
 			itemCapacity = 500;
-			mineTier = 6;
+			mineTier = 15;
 			mineSpeed = 8;
 			hitSize = 2 * 8;
+			defaultCommand = UnitCommand.mineCommand;
 			weapons.add(new SWeapon(ST_WEAPON.SPRITE_TURBO_LASER) {{
+				displayDraw = false;
 				x = 0;
 				y = 0;
 				bullet(
@@ -166,7 +179,7 @@ public class ST_UNIT {
 			this.constructor = UnitEntity::create;
 			flying = true;
 			hitSize = 5 * 8;
-			health = 2400;
+			health = 6000;
 			armor = 4;
 			speed = 30 / 8f;
 			itemCapacity = 600;
@@ -200,7 +213,7 @@ public class ST_UNIT {
 			this.constructor = UnitEntity::create;
 			flying = true;
 			hitSize = 8 * 8;
-			health = 12000;
+			health = 32000;
 			armor = 8;
 			speed = 15 / 8f;
 			itemCapacity = 300;
@@ -246,7 +259,7 @@ public class ST_UNIT {
 			this.constructor = UnitEntity::create;
 			flying = true;
 			hitSize = 10 * 8;
-			health = 30000;
+			health = 120000;
 			armor = 12;
 			speed = 10 / 8f;
 			itemCapacity = 1200;
@@ -257,7 +270,7 @@ public class ST_UNIT {
 				}
 			});
 			abilities.add(new UnitSpawnAbility(MATRIX_A1, 16 * 60, 0, 0));
-			abilities.add(new ST_ABILITY.SHIELD_FIELD_EXTRA(12 * 18, 30.0F, 1500f, 30 * 60) {{
+			abilities.add(new ST_ABILITY.SHIELD_FIELD_EXTRA(12 * 18, 1.0F, 1500f, 30 * 60) {{
 				sides = 3;
 				color = ST_ITEM.WOOD_ELEMENT.color;
 			}});
@@ -331,8 +344,8 @@ public class ST_UNIT {
 		MATRIX_A4 = new SUnitType("MATRIX_A4") {{
 			flying = true;
 			hitSize = 13 * 8;
-			health = 640000;
-			armor = 64;
+			health = 900000;
+			armor = 24;
 			speed = 8 / 8f;
 			itemCapacity = 6000;
 			engines.add(new UnitEngine(0, -12f * 8, 18f, -90));
@@ -345,7 +358,7 @@ public class ST_UNIT {
 			abilities.add(new MoveLightningAbility(50f, 8 * 4, 0.4F, 16.0F, 0.20000002F, 1.3333334F, ST_ITEM.WOOD_ELEMENT.color));
 			abilities.add(new UnitSpawnAbility(MATRIX_A1, 24 * 60, 0, 0));
 			abilities.add(new UnitSpawnAbility(MATRIX_A2, 15 * 60, 0, 0));
-			abilities.add(new ST_ABILITY.SHIELD_FIELD_EXTRA(16 * 20, 30.0F, 10000.0F, 30 * 60) {{
+			abilities.add(new ST_ABILITY.SHIELD_FIELD_EXTRA(16 * 20, 1.5F, 10000.0F, 30 * 60) {{
 				sides = 3;
 				color = ST_ITEM.WOOD_ELEMENT.color;
 			}});
@@ -500,14 +513,15 @@ public class ST_UNIT {
 		//
 		ZETA = new SUnitType("ZETA") {{
 			flying = true;
-			health = 1500;
+			health = 5000;
 			hitSize = 3 * 8;
 			itemCapacity = 300;
-			mineTier = 6;
+			mineTier = 15;
+			buildSpeed = 25;
 			armor = 6;
 			speed = 60 / 8f;
 			engines.add(new UnitEngine(0, -6f, 4, -90));
-			abilities.add(new ST_ABILITY.SHIELD_FIELD_EXTRA(8 * 20, 30.0F, 1200, 10 * 60f) {{
+			abilities.add(new ST_ABILITY.SHIELD_FIELD_EXTRA(8 * 20, 1F, 1200, 10 * 60f) {{
 				sides = 3;
 				color = ST_ITEM.LIGHT_ELEMENT.color;
 			}});
@@ -589,11 +603,12 @@ public class ST_UNIT {
 				ST_ITEM.METRYSTAl, 50
 			)));
 			plans.add(new UnitFactory.UnitPlan(MATRIX_A2, 60 * 30, ItemStack.with(
-				ST_ITEM.CHROMAL, 300,
-				ST_ITEM.SUSPENDED, 200,
-				ST_ITEM.NANOTUBE, 150,
-				ST_ITEM.SUPERCONDUCTOR, 100,
-				ST_ITEM.METRYSTAl, 75
+				ST_ITEM.CHROMAL, 1000,
+				ST_ITEM.SUSPENDED, 750,
+				ST_ITEM.NANOTUBE, 750,
+				ST_ITEM.SUPERCONDUCTOR, 500,
+				ST_ITEM.METRYSTAl, 255,
+				ST_ITEM.ANTIMATTER, 50
 			)));
 			inject(this, 2);
 		}};
@@ -612,22 +627,22 @@ public class ST_UNIT {
 				Items.plastanium, 500
 			);
 			plans.add(new UnitFactory.UnitPlan(MATRIX_A3, 60 * 120, ItemStack.with(
-				ST_ITEM.CHROMAL, 750,
-				ST_ITEM.NANOTUBE, 300,
-				ST_ITEM.SUPERCONDUCTOR, 500,
-				ST_ITEM.SUSPENDED, 250,
-				ST_ITEM.METRYSTAl, 150,
-				ST_ITEM.ANTIMATTER, 25
+				ST_ITEM.CHROMAL, 2500,
+				ST_ITEM.NANOTUBE, 500,
+				ST_ITEM.SUPERCONDUCTOR, 800,
+				ST_ITEM.SUSPENDED, 1500,
+				ST_ITEM.METRYSTAl, 400,
+				ST_ITEM.ANTIMATTER, 300
 			)));
 			plans.add(new UnitFactory.UnitPlan(MATRIX_A4, 60 * 240, ItemStack.with(
-				ST_ITEM.CHROMAL, 3500,
-				ST_ITEM.NANOTUBE, 1000,
-				ST_ITEM.SUPERCONDUCTOR, 1000,
-				ST_ITEM.SUSPENDED, 3000,
-				ST_ITEM.METRYSTAl, 500,
-				ST_ITEM.ANTIMATTER, 500,
-				ST_ITEM.LIGHT_ELEMENT, 100,
-				ST_ITEM.DARK_ELEMENT, 100
+				ST_ITEM.CHROMAL, 6000,
+				ST_ITEM.NANOTUBE, 2500,
+				ST_ITEM.SUPERCONDUCTOR, 1500,
+				ST_ITEM.SUSPENDED, 5000,
+				ST_ITEM.METRYSTAl, 2500,
+				ST_ITEM.ANTIMATTER, 1500,
+				ST_ITEM.LIGHT_ELEMENT, 50,
+				ST_ITEM.DARK_ELEMENT, 50
 			)));
 			inject(this, 3);
 		}};

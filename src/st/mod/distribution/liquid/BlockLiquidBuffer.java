@@ -2,7 +2,10 @@ package st.mod.distribution.liquid;
 
 import arc.Core;
 import arc.graphics.g2d.TextureRegion;
+import arc.util.io.Reads;
 import mindustry.game.Team;
+import mindustry.gen.Building;
+import mindustry.type.Liquid;
 import mindustry.world.Tile;
 import mindustry.world.blocks.liquid.LiquidRouter;
 import st.ST;
@@ -39,6 +42,15 @@ public class BlockLiquidBuffer extends LiquidRouter {
 		hasLiquids = true;
 	}
 	public class BlockBufferLiquidBuild extends LiquidRouterBuild {
+		@Override
+		public boolean acceptLiquid(Building source, Liquid liquid) {
+			return liquidCapacity - liquids.get(liquid) > 0.2f;
+		}
+		@Override
+		public void read(Reads read, byte revision) {
+			super.read(read, revision);
+			STORE_LIQUID_BUFFER.BUILD.add(this);
+		}
 		@Override
 		public void placed() {
 			super.placed();

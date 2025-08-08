@@ -129,7 +129,7 @@ task testGame {
     doLast {
         println "✅ 'jar' task finished. Starting file copy..."
         copy {
-            from './build/libs/Mindustry-SingularityTechnology-masterDesktop.jar'
+            from './build/libs/StallarDesktop.jar'
             into 'C:\\Users\\YmStrip\\Desktop\\mdt\\149\\data-test\\Mindustry\\mods'
         }
         println "✅ File copied successfully. Starting BAT command..."
@@ -141,4 +141,23 @@ task testGame {
         }
     }
 
+}
+task playGame {
+    group = 'Game'
+    description = 'Build and copy and open game'
+    dependsOn 'jar'
+    doLast {
+        println "✅ 'jar' task finished. Starting file copy..."
+        copy {
+            from './build/libs/StallarDesktop.jar'
+            into 'C:\\Users\\YmStrip\\Desktop\\mdt\\149\\data\\Mindustry\\mods'
+        }
+        println "✅ File copied successfully. Starting BAT command..."
+        exec {
+            workingDir 'C:\\Users\\YmStrip\\Desktop\\mdt\\149'
+            commandLine 'cmd', '/c', 'start.bat'
+            standardOutput = System.out
+            errorOutput = System.err
+        }
+    }
 }

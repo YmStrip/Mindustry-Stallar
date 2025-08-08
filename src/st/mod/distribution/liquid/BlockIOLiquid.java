@@ -5,6 +5,7 @@ import mindustry.gen.Building;
 import mindustry.type.Liquid;
 import st.mod.distribution.STORE_LIQUID_BUFFER;
 
+
 public class BlockIOLiquid extends BlockIOLiquidAbstract {
 
 	public BlockIOLiquid(String name) {
@@ -21,5 +22,9 @@ public class BlockIOLiquid extends BlockIOLiquidAbstract {
 	@Override
 	public void addAmount(Building building, Liquid liquid, float amount) {
 		STORE_LIQUID_BUFFER.BUILD.addAmount(building, liquid, amount);
+	}
+	@Override
+	public boolean canHandleLiquid(Building self, Building source, Liquid liquid) {
+		return !(source instanceof BlockIOLiquidAbstractBuild);
 	}
 }
