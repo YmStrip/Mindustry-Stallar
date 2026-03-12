@@ -2,12 +2,12 @@ package st.mod.functional;
 
 import mindustry.gen.Building;
 import st.mod.functional.entity.SCore;
-import st.mod.util.SBuildMap;
+import st.mod.util.CountBuild;
 
 public class STORE_CORE {
-	public static SBuildMap<SCore.ScoreBuild> BUILD = new SBuildMap<>() {
+	public static CountBuild<SCore.ScoreBuild> BUILD = new CountBuild<>() {
 		@Override
-		public boolean testBuild(Building build) {
+		public boolean Filter(Building build) {
 			return build instanceof SCore.ScoreBuild;
 		}
 	};

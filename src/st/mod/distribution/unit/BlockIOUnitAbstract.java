@@ -23,11 +23,11 @@ public abstract class BlockIOUnitAbstract extends BlockIO<UnitType> {
 		acceptsUnitPayloads = true;
 	}
 	@Override
-	protected UnitType getSelectFromName(String name) {
+	protected UnitType GetSelectFromName(String name) {
 		return Vars.content.unit(name);
 	}
 	@Override
-	protected Seq<UnitType> getSelectList() {
+	protected Seq<UnitType> GetSelectList() {
 		return Vars.content.units();
 	}
 	@Override
@@ -45,15 +45,15 @@ public abstract class BlockIOUnitAbstract extends BlockIO<UnitType> {
 			return select == null ? 0 : (progress);
 		}
 		public void removeProgress() {
-			this.progress += speedOutput / 60;
+			this.progress += OutputRate / 60;
 		}
 		public void addProgress() {
-			this.progress += speedOutput / 60;
+			this.progress += OutputRate / 60;
 		}
 		//input unit
 		@Override
 		public boolean acceptPayload(Building source, Payload payload) {
-			if (!canInput) return false;
+			if (!InputAble) return false;
 			if (!canHandlePayload(this, source, payload)) return false;
 			//must be unitType
 			if (!(payload instanceof UnitPayload unitPayload)) return false;
@@ -61,21 +61,21 @@ public abstract class BlockIOUnitAbstract extends BlockIO<UnitType> {
 			//cannot input broken
 			//if (unitPayload.unit.health < unitPayload.unit.health * 0.8) return false;
 			if (getCapacity(this, unitPayload.unit.type) - getAmount(this, unitPayload.unit.type) < 1) {
-				removeBufferInput();
+				InputBufferReduce();
 				return false;
 			}
 			if (efficiency < 1) {
-				removeBufferInput();
+				InputBufferReduce();
 				return false;
 			}
-			addBufferInput();
-			return !(bufferInput < 1);
+			InputBufferIncrease();
+			return !(InputBuffer < 1);
 		}
 		@Override
 		public void handlePayload(Building source, Payload payload) {
 			if (!(payload instanceof UnitPayload unitPayload)) return;
 			if (unitPayload.unit == null) return;
-			this.bufferInput = Math.max(0, this.bufferInput - 1);
+			this.InputBuffer = Math.max(0, this.InputBuffer - 1);
 			addAmount(this, unitPayload.unit.type, 1);
 		}
 		//reset progress when change select
@@ -84,7 +84,7 @@ public abstract class BlockIOUnitAbstract extends BlockIO<UnitType> {
 			super.configure(value);
 			if (value instanceof UnitType unitType) {
 				if (select != unitType) {
-					this.bufferOutput = 0;
+					this.OutputBuffer = 0;
 				}
 			}
 		}

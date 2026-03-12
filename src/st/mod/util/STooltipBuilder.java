@@ -8,53 +8,50 @@ import mindustry.world.meta.Stats;
 import st.ST;
 
 public class STooltipBuilder {
-	public Stats stats;
-	public StatCat cat;
+	public Stats Stats;
+	public StatCat Cat;
 
 	public STooltipBuilder(Stats stats, StatCat cat) {
-		this.stats = stats;
-		this.cat = cat;
+		this.Stats = stats;
+		this.Cat = cat;
 	}
-	public String getSuffixName(String name) {
-		System.out.println(Core.bundle.has(ST.name + "-" + name + ".right") ? " " + Core.bundle.get(ST.name + "-" + name + ".right") : " " + " ,, " + (ST.name + "-" + name + ".right"));
-		return Core.bundle.has(ST.name + "-" + name + ".right") ? " " + Core.bundle.get(ST.name + "-" + name + ".right") : "";
+	public String GetSuffixName(String name) {
+		return Core.bundle.has(ST.Name + "-" + name + ".right") ? " " + Core.bundle.get(ST.Name + "-" + name + ".right") : "";
 	}
 
 
-	public STooltipBuilder techLevel(int level) {
+	public STooltipBuilder TechLevel(int level) {
 		int v = level;
 		if (v < 1) v = 1;
 		if (v > 4) v = 4;
-		Stat Left = new Stat(ST.name + "-level", cat);
-		String Right = new Stat(ST.name + "-level_" + level).localized();
-		stats.add(Left, Right);
+		Stat Left = new Stat(ST.Name + "-level", Cat);
+		String Right = new Stat(ST.Name + "-level_" + level).localized();
+		Stats.add(Left, Right);
 		return this;
 	}
 
-	public STooltipBuilder show(String name, StatValue call) {
-		var st = new Stat(ST.name + "-" + name, cat);
-		stats.add(st, call);
+	public STooltipBuilder Add(String name, StatValue call) {
+		var st = new Stat(ST.Name + "-" + name, Cat);
+		Stats.add(st, call);
 		return this;
 	}
 
-	public STooltipBuilder show(String name, float value) {
-		if (value == 0) return this;
-		var Left = new Stat(ST.name + "-" + name, cat);
-		stats.add(Left, ((long) value + getSuffixName(name)));
+	public STooltipBuilder Add(String name, float value) {
+		var Left = new Stat(ST.Name + "-" + name, Cat);
+		Stats.add(Left, ((long) value + GetSuffixName(name)));
+		return this;
+	}
+	public STooltipBuilder Add(String name, String value) {
+		var Left = new Stat(ST.Name + "-" + name, Cat);
+		Stats.add(Left, (value + GetSuffixName(name)));
 
 		return this;
 	}
-	public STooltipBuilder show(String name, String value) {
-		var Left = new Stat(ST.name + "-" + name, cat);
-		stats.add(Left, (value + getSuffixName(name)));
 
-		return this;
-	}
-
-	public STooltipBuilder show(String name, boolean value) {
-		var Left = new Stat(ST.name + "-" + name, cat);
-		var v = value ? Core.bundle.get(ST.name + "-TRUE") : Core.bundle.get(ST.name + "-FALSE");
-		stats.add(Left, v);
+	public STooltipBuilder Add(String name, boolean value) {
+		var Left = new Stat(ST.Name + "-" + name, Cat);
+		var v = value ? Core.bundle.get(ST.Name + "-TRUE") : Core.bundle.get(ST.Name + "-FALSE");
+		Stats.add(Left, v);
 		return this;
 	}
 }

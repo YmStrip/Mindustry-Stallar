@@ -1,10 +1,7 @@
 package st.mod.distribution.entity;
 
-import arc.struct.Seq;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Building;
-
-import java.util.ArrayList;
 
 
 public abstract class BlockIO<T extends UnlockableContent> extends BlockSelect<T> {
@@ -13,37 +10,37 @@ public abstract class BlockIO<T extends UnlockableContent> extends BlockSelect<T
 		boolean test(Building building);
 	}
 
-	public boolean canInput = false;
-	public boolean canOutput = false;
-	public float speedInput = 4;
-	public float bufferInputMax = 4;
-	public float speedOutput = 4;
-	public float bufferOutputMax = 4;
+	public boolean InputAble = false;
+	public boolean OutputAble = false;
+	public float InputRate = 4;
+	public float InputBufferMax = 4;
+	public float OutputRate = 4;
+	public float OutputBufferMax = 4;
 	public BlockIO(String name) {
 		super(name);
 		canOverdrive = true;
 	}
 	public class BlockIOBuild extends BlockSelectBuild {
 		//amount can be input in current tick
-		public float bufferInput = 0;
-		public float bufferOutput = 0;
+		public float InputBuffer = 0;
+		public float OutputBuffer = 0;
 		//lazy scheduler
-		public DistributorBlockIO distributor = new DistributorBlockIO();
+		public DistributorBlockIO Distributor = new DistributorBlockIO();
 		//can only increase once per tick
-		public void addBufferInput() {
-			bufferInput = Math.min(speedInput / 45f * timeScale * efficiency + bufferInput, bufferInputMax * timeScale);
+		public void InputBufferIncrease() {
+			InputBuffer = Math.min(InputRate / 45f * timeScale * efficiency + InputBuffer, InputBufferMax * timeScale);
 		}
 		//can only increase once per tick
-		public void addBufferOutput() {
-			bufferOutput = Math.min(speedOutput / 45f * timeScale * efficiency + bufferOutput, bufferOutputMax * timeScale);
+		public void OutputBufferIncrease() {
+			OutputBuffer = Math.min(OutputRate / 45f * timeScale * efficiency + OutputBuffer, OutputBufferMax * timeScale);
 		}
-		public void removeBufferInput() {
-			bufferInput = Math.max(bufferInput - bufferInput / 45f, 0);
+		public void InputBufferReduce() {
+			InputBuffer = Math.max(InputBuffer - InputBuffer / 45f, 0);
 		}
-		public void removeBufferOutput() {
-			bufferOutput = Math.max(bufferOutput - speedOutput / 45f, 0);
+		public void OutputBufferReduce() {
+			OutputBuffer = Math.max(OutputBuffer - OutputRate / 45f, 0);
 		}
-		public Building getProximityBuilding(getProximityBuilding test) {
+		public Building GetProximityBuilding(getProximityBuilding test) {
 			this.incrementDump(this.proximity.size);
 			for (var i = 0; i < proximity.size; ++i) {
 				var other = this.proximity.get((i + cdump) % this.proximity.size);

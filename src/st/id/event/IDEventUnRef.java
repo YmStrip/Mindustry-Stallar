@@ -4,9 +4,9 @@ import st.id.entity.ID;
 import st.id.entity.IDEvent;
 
 public class IDEventUnRef extends IDEvent {
-	public ID target;
+	public ID Target;
 	public IDEventUnRef(ID id, ID target) {
 		super(id);
-		this.target = target;
+		this.Target = target;
 	}
 }

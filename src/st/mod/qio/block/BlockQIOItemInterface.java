@@ -4,9 +4,7 @@ package st.mod.qio.block;
 import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
-import arc.scene.style.Drawable;
 import arc.scene.ui.Button;
-import arc.scene.ui.Label;
 import arc.scene.ui.Slider;
 import arc.scene.ui.layout.Table;
 import arc.util.io.Reads;
@@ -19,7 +17,7 @@ import mindustry.ui.Styles;
 import mindustry.world.Tile;
 import st.ST;
 import st.mod.distribution.item.BlockIOItemAbstract;
-import st.mod.qio.STORE_QIO;
+import st.mod.qio.STQIO;
 import st.mod.qio.draw.DrawQIO;
 
 
@@ -34,34 +32,34 @@ public class BlockQIOItemInterface extends BlockIOItemAbstract {
 	public BlockQIOItemInterface(String name) {
 		super(name);
 	}
-	public int maxPlace = 4;
+	public int PalceMax = 4;
 	@Override
 	public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-		return super.canPlaceOn(tile, team, rotation) && STORE_QIO.BUILD.count(team) < maxPlace;
+		return super.canPlaceOn(tile, team, rotation) && STQIO.Build.Count(team) < PalceMax;
 	}
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
 		super.drawPlace(x, y, rotation, valid);
-		if (!valid) drawPlaceText(ST.bar("max_place") + ": " + maxPlace, x, y, valid);
+		if (!valid) drawPlaceText(ST.Bar("max_place") + ": " + PalceMax, x, y, valid);
 	}
 	@Override
-	protected float getAmount(Building building, Item item) {
-		return STORE_QIO.NETWORK.ITEM.get(item.name);
+	protected float GetAmount(Building building, Item item) {
+		return STQIO.Network.Item.Get(item.name);
 	}
 	@Override
-	protected float getCapacity(Building building, Item item) {
-		return STORE_QIO.NETWORK.ITEM.capacity;
+	protected float GetCapacity(Building building, Item item) {
+		return STQIO.Network.Item.Capacity;
 	}
 	@Override
-	protected void addAmount(Building building, Item item) {
-		STORE_QIO.NETWORK.ITEM.add(item.name, 1);
+	protected void AddAmount(Building building, Item item) {
+		STQIO.Network.Item.Add(item.name, 1);
 	}
 	@Override
-	protected void removeAmount(Building building, Item item) {
-		STORE_QIO.NETWORK.ITEM.remove(item.name, 1);
+	protected void RemoveAmount(Building building, Item item) {
+		STQIO.Network.Item.Remove(item.name, 1);
 	}
 	@Override
-	public boolean canHandleItem(Building self, Building source, Item item) {
+	public boolean CanHandleItem(Building self, Building source, Item item) {
 		return !(source instanceof BlockQIOItemInterfaceBuild);
 	}
 	public class BlockQIOItemInterfaceBuild extends BlockIOItemAbstractBuild {
@@ -70,12 +68,12 @@ public class BlockQIOItemInterface extends BlockIOItemAbstract {
 		@Override
 		public void placed() {
 			super.placed();
-			STORE_QIO.BUILD.add(this);
+			STQIO.Build.Add(this);
 		}
 		@Override
 		public void onRemoved() {
 			super.onRemoved();
-			STORE_QIO.BUILD.remove(this);
+			STQIO.Build.Remove(this);
 		}
 		public DrawQIO draw = new DrawQIO() {{
 			color = BlockQIOItemInterface.this.color;
@@ -92,24 +90,24 @@ public class BlockQIOItemInterface extends BlockIOItemAbstract {
 				var core = team.core();
 				if (core == null) return;
 				var amount = core.items.get(select);
-				var remainCapacity = getCapacity(this, select) - getAmount(this, select);
+				var remainCapacity = GetCapacity(this, select) - GetAmount(this, select);
 				if (amount < 1 || remainCapacity < 1) return;
-				addBufferInput();
-				if (bufferInput > 1) {
-					var canTake = (int) Math.min(Math.min(Math.floor(bufferInput), amount), remainCapacity);
-					bufferInput -= canTake;
+				InputBufferIncrease();
+				if (InputBuffer > 1) {
+					var canTake = (int) Math.min(Math.min(Math.floor(InputBuffer), amount), remainCapacity);
+					InputBuffer -= canTake;
 					core.items.remove(select, canTake);
-					STORE_QIO.NETWORK.ITEM.add(select.name, canTake);
+					STQIO.Network.Item.Add(select.name, canTake);
 				}
 			}
 		}
 		@Override
-		public void addBufferInput() {
-			bufferInput = Math.min(speed / 45f * timeScale * efficiency + bufferInput, speedInput * timeScale);
+		public void InputBufferIncrease() {
+			InputBuffer = Math.min(speed / 45f * timeScale * efficiency + InputBuffer, InputRate * timeScale);
 		}
 		@Override
-		public void addBufferOutput() {
-			bufferOutput = Math.min(speed / 45f * timeScale * efficiency + bufferOutput, speedOutput * timeScale);
+		public void OutputBufferIncrease() {
+			OutputBuffer = Math.min(speed / 45f * timeScale * efficiency + OutputBuffer, OutputRate * timeScale);
 		}
 		@Override
 		public void draw() {
@@ -138,7 +136,7 @@ public class BlockQIOItemInterface extends BlockIOItemAbstract {
 					BlockQIOItemInterfaceBuild.super.buildConfiguration(left);
 					var right = new Table() {{
 						setBackground(Styles.black5);
-						var slider = new Slider(0, speedOutput, speedOutput / 120, true) {{
+						var slider = new Slider(0, OutputRate, OutputRate / 120, true) {{
 							setValue(speed);
 							this.moved(v -> speed = v);
 							getKnobDrawable();
@@ -177,7 +175,7 @@ public class BlockQIOItemInterface extends BlockIOItemAbstract {
 			}
 			if (revision == 2) {
 				super.read(read, revision);
-				speed = Math.min(Math.max(read.f(), 0), speedOutput);
+				speed = Math.min(Math.max(read.f(), 0), OutputRate);
 				output = read.bool();
 			}
 		}

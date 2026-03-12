@@ -11,7 +11,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.Payload;
 import st.ST;
 import st.mod.distribution.unit.BlockIOUnitAbstract;
-import st.mod.qio.STORE_QIO;
+import st.mod.qio.STQIO;
 import st.mod.qio.draw.DrawQIO;
 
 public class BlockQIOUnitInterface extends BlockIOUnitAbstract {
@@ -25,27 +25,27 @@ public class BlockQIOUnitInterface extends BlockIOUnitAbstract {
 	public BlockQIOUnitInterface(String name) {
 		super(name);
 	}
-	public int maxPlace = 4;
+	public int PlaceMax = 4;
 	@Override
 	public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-		return super.canPlaceOn(tile, team, rotation) && STORE_QIO.BUILD.count(team) < maxPlace;
+		return super.canPlaceOn(tile, team, rotation) && STQIO.Build.Count(team) < PlaceMax;
 	}
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
 		super.drawPlace(x, y, rotation, valid);
-		if (!valid) drawPlaceText(ST.bar("max_place") + ": " + maxPlace, x, y, valid);
+		if (!valid) drawPlaceText(ST.Bar("max_place") + ": " + PlaceMax, x, y, valid);
 	}
 	@Override
 	public void addAmount(Building source, UnitType unit, float count) {
-		STORE_QIO.NETWORK.UNIT.add(unit.name, count);
+		STQIO.Network.Unit.Add(unit.name, count);
 	}
 	@Override
 	public float getAmount(Building source, UnitType unit) {
-		return STORE_QIO.NETWORK.UNIT.get(unit.name);
+		return STQIO.Network.Unit.Get(unit.name);
 	}
 	@Override
 	public float getCapacity(Building source, UnitType unit) {
-		return STORE_QIO.NETWORK.UNIT.capacity;
+		return STQIO.Network.Unit.Capacity;
 	}
 	@Override
 	public boolean canHandlePayload(Building self, Building source, Payload payload) {
@@ -55,12 +55,12 @@ public class BlockQIOUnitInterface extends BlockIOUnitAbstract {
 		@Override
 		public void placed() {
 			super.placed();
-			STORE_QIO.BUILD.add(this);
+			STQIO.Build.Add(this);
 		}
 		@Override
 		public void onRemoved() {
 			super.onRemoved();
-			STORE_QIO.BUILD.remove(this);
+			STQIO.Build.Remove(this);
 		}
 		public DrawQIO draw = new DrawQIO() {{
 			color = BlockQIOUnitInterface.this.color;

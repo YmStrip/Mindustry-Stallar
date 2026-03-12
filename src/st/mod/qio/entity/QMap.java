@@ -7,60 +7,60 @@ import st.id.entity.ID;
 import java.util.HashMap;
 
 public class QMap extends ID {
-	public float capacity = 128;
-	public void capacity(float max) {
-		this.capacity = max;
-		this.clamp();
+	public float Capacity = 128;
+	public void Capacity(float max) {
+		this.Capacity = max;
+		this.Clamp();
 	}
-	public void clamp() {
-		for (var i : map.entrySet()) {
+	public void Clamp() {
+		for (var i : Map.entrySet()) {
 			var value = i.getValue();
-			if (value > capacity) value = capacity;
+			if (value > Capacity) value = Capacity;
 			if (value < 0) value = 0f;
 			i.setValue(value);
 		}
 	}
-	public HashMap<String, Float> map = new HashMap<>();
-	public float get(String name) {
-		var result = map.get(name);
+	public HashMap<String, Float> Map = new HashMap<>();
+	public float Get(String name) {
+		var result = Map.get(name);
 		if (result == null) return 0.0f;
-		if (result < 0 || result > capacity) {
+		if (result < 0 || result > Capacity) {
 			if (result < 0) result = 0.0f;
-			if (result > capacity) result = capacity;
-			map.put(name, result);
+			if (result > Capacity) result = Capacity;
+			Map.put(name, result);
 		}
 		return result;
 	}
-	public void set(String name, float value) {
-		map.put(name, Math.min(Math.max(value, 0), capacity));
+	public void Set(String name, float value) {
+		Map.put(name, Math.min(Math.max(value, 0), Capacity));
 	}
-	public void clear(String name) {
-		map.remove(name);
+	public void Clear(String name) {
+		Map.remove(name);
 	}
-	public boolean has(String name) {
-		return get(name) > 0;
+	public boolean Has(String name) {
+		return Get(name) > 0;
 	}
-	public void add(String name, float value) {
-		set(name, get(name) + value);
+	public void Add(String name, float value) {
+		Set(name, Get(name) + value);
 	}
-	public void remove(String name, float value) {
-		set(name, get(name) - value);
+	public void Remove(String name, float value) {
+		Set(name, Get(name) - value);
 	}
-	public void clear() {
-		map.clear();
+	public void Clear() {
+		Map.clear();
 	}
 	@Override
-	public void configure(JSONObject value) {
-		this.map.clear();
+	public void Configure(JSONObject value) {
+		this.Map.clear();
 		for (var i : value.keySet()) {
-			map.put(i, value.getFloat(i));
+			Map.put(i, value.getFloat(i));
 		}
-		super.configure(value);
+		super.Configure(value);
 	}
 	@Override
-	public JSONObject serialize() {
+	public JSONObject Serialize() {
 		var result = new JSONObject();
-		for (var entry : map.entrySet()) {
+		for (var entry : Map.entrySet()) {
 			result.put(entry.getKey(), entry.getValue());
 		}
 		return result;

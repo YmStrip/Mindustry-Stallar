@@ -6,7 +6,7 @@ import mindustry.gen.Unit;
 import mindustry.type.Weapon;
 
 public class SWeapon extends Weapon {
-	public boolean displayDraw = true;
+	public boolean DisplayDraw = true;
 	public SWeapon(String name) {
 		super(name);
 	}
@@ -20,12 +20,12 @@ public class SWeapon extends Weapon {
 	}
 	@Override
 	public void drawOutline(Unit unit, WeaponMount mount) {
-		if (!displayDraw) return;
+		if (!DisplayDraw) return;
 		super.drawOutline(unit, mount);
 	}
 	@Override
 	public void draw(Unit unit, WeaponMount mount) {
-		if (!displayDraw) return;
+		if (!DisplayDraw) return;
 		super.draw(unit, mount);
 	}
 }

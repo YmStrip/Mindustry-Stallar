@@ -3,7 +3,7 @@ package st.mod.distribution.liquid;
 
 import mindustry.gen.Building;
 import mindustry.type.Liquid;
-import st.mod.distribution.STORE_LIQUID_BUFFER;
+import st.mod.distribution.STDistribution;
 
 
 public class BlockIOLiquid extends BlockIOLiquidAbstract {
@@ -12,19 +12,19 @@ public class BlockIOLiquid extends BlockIOLiquidAbstract {
 		super(name);
 	}
 	@Override
-	public float getCapacity(Building building, Liquid liquid) {
-		return STORE_LIQUID_BUFFER.BUILD.getCapacity(building, liquid);
+	public float GetCapacity(Building building, Liquid liquid) {
+		return STDistribution.Build.GetCapacity(building, liquid);
 	}
 	@Override
-	public float getAmount(Building building, Liquid liquid) {
-		return STORE_LIQUID_BUFFER.BUILD.getAmount(building, liquid);
+	public float GetAmount(Building building, Liquid liquid) {
+		return STDistribution.Build.GetAmount(building, liquid);
 	}
 	@Override
-	public void addAmount(Building building, Liquid liquid, float amount) {
-		STORE_LIQUID_BUFFER.BUILD.addAmount(building, liquid, amount);
+	public void AddAmount(Building building, Liquid liquid, float amount) {
+		STDistribution.Build.AddAmount(building, liquid, amount);
 	}
 	@Override
-	public boolean canHandleLiquid(Building self, Building source, Liquid liquid) {
+	public boolean CanHandleLiquid(Building self, Building source, Liquid liquid) {
 		return !(source instanceof BlockIOLiquidAbstractBuild);
 	}
 }

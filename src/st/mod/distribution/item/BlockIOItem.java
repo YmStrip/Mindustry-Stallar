@@ -8,32 +8,32 @@ public class BlockIOItem extends BlockIOItemAbstract {
 		super(name);
 	}
 	@Override
-	protected float getAmount(Building building, Item item) {
+	protected float GetAmount(Building building, Item item) {
 		var core = building.core();
 		if (core == null) return 0;
 		return core.items.get(item);
 	}
 	@Override
-	protected float getCapacity(Building building, Item item) {
+	protected float GetCapacity(Building building, Item item) {
 		var core = building.core();
 		if (core == null) return 0;
 		return core.storageCapacity;
 	}
 	@Override
-	protected void addAmount(Building building, Item item) {
+	protected void AddAmount(Building building, Item item) {
 		var core = building.core();
 		if (core == null) return;
 		core.handleItem(building, item);
 	}
 	@Override
-	protected void removeAmount(Building building, Item item) {
+	protected void RemoveAmount(Building building, Item item) {
 		var core = building.core();
 		if (core == null) return;
 		core.itemTaken(item);
 		core.items.remove(item, 1);
 	}
 	@Override
-	public boolean canHandleItem(Building self, Building source, Item item) {
+	public boolean CanHandleItem(Building self, Building source, Item item) {
 		return !(source instanceof BlockIOItemAbstractBuild);
 	}
 }

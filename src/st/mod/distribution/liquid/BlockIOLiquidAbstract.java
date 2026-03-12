@@ -14,20 +14,20 @@ public abstract class BlockIOLiquidAbstract extends BlockIO<Liquid> {
 	@Override
 	public void init() {
 		super.init();
-		this.liquidCapacity = this.speedInput / 60f;
+		this.liquidCapacity = this.InputRate / 60f;
 	}
 	@Override
-	protected Liquid getSelectFromName(String name) {
+	protected Liquid GetSelectFromName(String name) {
 		return Vars.content.liquid(name);
 	}
 	@Override
-	protected Seq<Liquid> getSelectList() {
+	protected Seq<Liquid> GetSelectList() {
 		return Vars.content.liquids();
 	}
-	public abstract float getCapacity(Building building, Liquid liquid);
-	public abstract float getAmount(Building building, Liquid liquid);
-	public abstract void addAmount(Building building, Liquid liquid, float amount);
-	public abstract boolean canHandleLiquid(Building self, Building source, Liquid liquid);
+	public abstract float GetCapacity(Building building, Liquid liquid);
+	public abstract float GetAmount(Building building, Liquid liquid);
+	public abstract void AddAmount(Building building, Liquid liquid, float amount);
+	public abstract boolean CanHandleLiquid(Building self, Building source, Liquid liquid);
 	public BlockIOLiquidAbstract(String name) {
 		super(name);
 		underBullets = false;
@@ -39,51 +39,51 @@ public abstract class BlockIOLiquidAbstract extends BlockIO<Liquid> {
 		public void updateTile() {
 			super.updateTile();
 			if (select == null || proximity.size == 0) return;
-			var offset = distributor.next(proximity.size);
+			var offset = Distributor.Next(proximity.size);
 			var build = proximity.get(offset);
 			if (build == null || !build.acceptLiquid(this, select)) {
-				distributor.update(weight -> -DistributorBlockIO.softNorm(weight) / 24f);
+				Distributor.Update(weight -> -DistributorBlockIO.SoftNorm(weight) / 24f);
 				return;
 			}
 			//0.5
 			//addBufferOutput();
-			var weight = distributor.update(w -> DistributorBlockIO.softNorm(w / 24));
+			var weight = Distributor.Update(w -> DistributorBlockIO.SoftNorm(w / 24));
 			// 1/2 * 3 = 3/2
-			var amount = speedOutput / 45f * weight * proximity.size * timeScale;
+			var amount = OutputRate / 45f * weight * proximity.size * timeScale;
 			//System.out.println("amount " + amount + " , total " + distributor.weightTotal + " op" + proximity.size);
-			outputToBuild(build, amount);
+			OutputToBuild(build, amount);
 		}
-		public void outputToBuild(@Nullable Building target) {
-			outputToBuild(target, bufferOutput);
+		public void OutputToBuild(@Nullable Building target) {
+			OutputToBuild(target, OutputBuffer);
 		}
-		public void outputToBuild(@Nullable Building target, float amount) {
+		public void OutputToBuild(@Nullable Building target, float amount) {
 			if (target == null || target.liquids == null) return;
-			var maxCanTaken = Math.min(Math.min(amount, target.block.liquidCapacity - target.liquids.get(select)), getAmount(this, select));
+			var maxCanTaken = Math.min(Math.min(amount, target.block.liquidCapacity - target.liquids.get(select)), GetAmount(this, select));
 			if (maxCanTaken <= 0) return;
-			bufferOutput = Math.min(bufferOutput - maxCanTaken, 0);
-			addAmount(this, select, -maxCanTaken);
+			OutputBuffer = Math.min(OutputBuffer - maxCanTaken, 0);
+			AddAmount(this, select, -maxCanTaken);
 			target.handleLiquid(this, select, maxCanTaken);
 		}
 		//input
 		@Override
 		public boolean acceptLiquid(Building source, Liquid liquid) {
-			if (!canInput) return false;
-			if (!canHandleLiquid(this, source, liquid)) return false;
+			if (!InputAble) return false;
+			if (!CanHandleLiquid(this, source, liquid)) return false;
 			if (source.team != team || source.liquids == null) return false;
-			this.addBufferInput();
-			var maxCanTaken = Math.min(Math.min(source.liquids.get(liquid), bufferInput), getCapacity(source, liquid) - getAmount(source, liquid));
-			if (bufferInput > liquidCapacity) bufferInput = liquidCapacity;
+			this.InputBufferIncrease();
+			var maxCanTaken = Math.min(Math.min(source.liquids.get(liquid), InputBuffer), GetCapacity(source, liquid) - GetAmount(source, liquid));
+			if (InputBuffer > liquidCapacity) InputBuffer = liquidCapacity;
 			if (maxCanTaken <= 0) return false;
-			bufferInput -= maxCanTaken;
+			InputBuffer -= maxCanTaken;
 			source.liquids.remove(liquid, maxCanTaken);
-			addAmount(source, liquid, maxCanTaken);
+			AddAmount(source, liquid, maxCanTaken);
 			return false;
 		}
 		@Override
 		public void handleLiquid(Building source, Liquid liquid, float amount) {
-			addAmount(source, liquid, amount);
-			bufferInput -= amount;
-			if (bufferInput < 0) bufferInput = 0;
+			AddAmount(source, liquid, amount);
+			InputBuffer -= amount;
+			if (InputBuffer < 0) InputBuffer = 0;
 		}
 	}
 }

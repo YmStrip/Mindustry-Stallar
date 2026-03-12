@@ -5,37 +5,37 @@ import arc.Core;
 import arc.graphics.g2d.TextureRegion;
 
 public class ST {
-	public static String name = "st";
+	public static String Name = "st";
 
-	public static String name(String n) {
-		return Core.bundle.get(name + "-" + n);
+	public static String Name(String n) {
+		return Core.bundle.get(Name + "-" + n);
 	}
 
-	public static String name(String type, String n) {
-		return Core.bundle.get(type + "." + name + "-" + n);
+	public static String Name(String type, String n) {
+		return Core.bundle.get(type + "." + Name + "-" + n);
 	}
-	public static String stat(String name) {
-		return name("stat", name);
+	public static String Stat(String name) {
+		return Name("stat", name);
 	}
-	public static String bar(String name) {
-		return name("bar", name);
+	public static String Bar(String name) {
+		return Name("bar", name);
 	}
-	public static String ui(String name) {
-		return name("ui", name);
+	public static String UI(String name) {
+		return Name("ui", name);
 	}
-	public static String item(String name) {
-		return name("item", name);
+	public static String Item(String name) {
+		return Name("item", name);
 	}
-	public static String stage(String name) {
-		return name("stage", name);
+	public static String Stage(String name) {
+		return Name("stage", name);
 	}
-	public static String block(String name) {
-		return name("block", name);
+	public static String Block(String name) {
+		return Name("block", name);
 	}
-	public static TextureRegion atlas(String name) {
-		return Core.atlas.find(atlasName(name));
+	public static TextureRegion Atlas(String name) {
+		return Core.atlas.find(AtlasName(name));
 	}
-	public static String atlasName(String name) {
-		return ST.name + "-" + name;
+	public static String AtlasName(String name) {
+		return ST.Name + "-" + name;
 	}
 }

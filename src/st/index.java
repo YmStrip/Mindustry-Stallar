@@ -2,30 +2,19 @@ package st;
 
 import arc.util.*;
 import mindustry.mod.*;
-import st.mod.ST_TECH;
-import st.mod.content.ST_ATTRIBUTE;
-import st.mod.content.ST_FLOOR;
-import st.mod.content.ST_LIQUID;
-import st.mod.distribution.ST_DISTRIBUTION;
-import st.mod.functional.FunctionalModule;
-import st.mod.functional.ST_FUNCTIONAL;
-import st.mod.item.ItemModule;
-import st.mod.item.ST_ITEM;
-import st.mod.power.PowerModule;
-import st.mod.power.ST_POWER;
-import st.mod.product.ProductModule;
-import st.mod.product.ST_PRODUCT;
-import st.mod.distribution.DistributionModule;
-import st.mod.qio.QIOModule;
-import st.mod.qio.ST_QIO;
-import st.mod.resource.ResourceModule;
-import st.mod.resource.ST_RESOURCE;
-import st.mod.turret.ST_TURRET;
-import st.mod.turret.TurretModule;
-import st.mod.unit.ST_UNIT;
-import st.mod.unit.UnitModule;
-import st.mod.wall.ST_WALL;
-import st.mod.wall.WallModule;
+import st.mod.STTech;
+import st.mod.content.STAttribute;
+import st.mod.content.STFloor;
+import st.mod.content.STLiquid;
+import st.mod.distribution.STDistribution;
+import st.mod.item.STItem;
+import st.mod.modular.struct.StructModular;
+import st.mod.multiblock.STMultiBlock;
+import st.mod.power.STPower;
+import st.mod.qio.STQIO;
+import st.mod.modular.STModular;
+import st.mod.unit.STUnit;
+import st.mod.wall.StWall;
 
 
 public class index extends Mod {
@@ -36,31 +25,22 @@ public class index extends Mod {
 	public void loadContent() {
 		//Log.info("name: "+ Vars.content.transformName("x"));
 		//
-		ST_TECH.load();
+		STTech.Init();
 		//
-		ST_ITEM.load();
-		ST_UNIT.load();
-		ST_ATTRIBUTE.load();
-		ST_FLOOR.load();
-		ST_LIQUID.load();
-		ST_PRODUCT.load();
-		ST_POWER.load();
-		ST_RESOURCE.load();
-		ST_TURRET.load();
-		ST_FUNCTIONAL.load();
-		ST_WALL.load();
-		ST_DISTRIBUTION.load();
-		ST_QIO.load();
-		//
-		new ItemModule();
-		new PowerModule();
-		new FunctionalModule();
-		new ProductModule();
-		new ResourceModule();
-		new TurretModule();
-		new UnitModule();
-		new WallModule();
-		new DistributionModule();
-		new QIOModule();
+		STItem.Init();
+		STModular.Init();
+		STUnit.Init();
+		STAttribute.Init();
+		STFloor.Init();
+		STLiquid.Init();
+		STPower.Init();
+		STMultiBlock.Init();
+		StructModular.Init();
+
+		//ST_RESOURCE.load();
+		//ST_FUNCTIONAL.load();
+		StWall.Init();
+		STDistribution.Init();
+		STQIO.Init();
 	}
 }

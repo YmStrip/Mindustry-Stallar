@@ -9,7 +9,7 @@ import mindustry.type.Liquid;
 import mindustry.world.Tile;
 import mindustry.world.blocks.liquid.LiquidRouter;
 import st.ST;
-import st.mod.distribution.STORE_LIQUID_BUFFER;
+import st.mod.distribution.STDistribution;
 
 import static mindustry.Vars.player;
 import static mindustry.Vars.world;
@@ -19,14 +19,14 @@ public class BlockLiquidBuffer extends LiquidRouter {
 	public int maxPlace = 1;
 	@Override
 	public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-		return (STORE_LIQUID_BUFFER.BUILD.count(team) < maxPlace);
+		return (STDistribution.Build.Count(team) < maxPlace);
 	}
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
 		super.drawPlace(x, y, rotation, valid);
 		if (!canPlaceOn(world.tile(x, y), player.team(), rotation)) {
-			if (STORE_LIQUID_BUFFER.BUILD.count(player.team()) >= maxPlace) {
-				drawPlaceText(Core.bundle.get(ST.bar("max_place") + ": " + maxPlace), x, y, valid);
+			if (STDistribution.Build.Count(player.team()) >= maxPlace) {
+				drawPlaceText(Core.bundle.get(ST.Bar("max_place") + ": " + maxPlace), x, y, valid);
 			}
 		}
 	}
@@ -49,17 +49,17 @@ public class BlockLiquidBuffer extends LiquidRouter {
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			STORE_LIQUID_BUFFER.BUILD.add(this);
+			STDistribution.Build.Add(this);
 		}
 		@Override
 		public void placed() {
 			super.placed();
-			STORE_LIQUID_BUFFER.BUILD.add(this);
+			STDistribution.Build.Add(this);
 		}
 		@Override
 		public void onRemoved() {
 			super.onRemoved();
-			STORE_LIQUID_BUFFER.BUILD.remove(this);
+			STDistribution.Build.Remove(this);
 		}
 	}
 }

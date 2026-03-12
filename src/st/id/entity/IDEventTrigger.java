@@ -4,17 +4,17 @@ import java.util.ArrayList;
 
 public class IDEventTrigger {
 	@FunctionalInterface
-	public interface fn {
-		public void fn();
+	public interface Func {
+		public void Callback();
 	}
-	private ArrayList<fn> listener = new ArrayList<>();
-	public void listen(fn fn) {
-		this.listener.add(fn);
+	private ArrayList<Func> Listener = new ArrayList<>();
+	public void listen(Func fn) {
+		this.Listener.add(fn);
 	}
 	public void emit() {
-		for (fn fn : listener) {
-			fn.fn();
+		for (Func fn : Listener) {
+			fn.Callback();
 		}
-		this.listener.clear();
+		this.Listener.clear();
 	}
 }

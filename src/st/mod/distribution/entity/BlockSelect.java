@@ -25,27 +25,27 @@ public abstract class BlockSelect<T extends UnlockableContent> extends Block {
 		saveConfig = false;
 		noUpdateDisabled = false;
 		config(String.class, (building, name) -> {
-			((BlockSelectBuild) building).select = getSelectFromName(name);
+			((BlockSelectBuild) building).select = GetSelectFromName(name);
 		});
 	}
 
-	public TextureRegion mainRegion;
-	public TextureRegion topRegion;
-	public boolean canSelect = false;
+	public TextureRegion MainRegion;
+	public TextureRegion TopRegion;
+	public boolean CanSelect = false;
 	public void load() {
 		super.load();
-		this.mainRegion = Core.atlas.find(this.name);
-		this.topRegion = Core.atlas.find(this.name + "-top");
+		this.MainRegion = Core.atlas.find(this.name);
+		this.TopRegion = Core.atlas.find(this.name + "-top");
 	}
 	@Override
 	public void init() {
 		super.init();
-		if (canSelect) {
+		if (CanSelect) {
 			configurable = true;
 		}
 	}
-	protected abstract T getSelectFromName(String name);
-	protected abstract Seq<T> getSelectList();
+	protected abstract T GetSelectFromName(String name);
+	protected abstract Seq<T> GetSelectList();
 	public BlockSelect(String name) {
 		super(name);
 	}
@@ -53,8 +53,8 @@ public abstract class BlockSelect<T extends UnlockableContent> extends Block {
 		public T select;
 		@Override
 		public void draw() {
-			Draw.rect(mainRegion, this.x, this.y);
-			if (topRegion.found()) {
+			Draw.rect(MainRegion, this.x, this.y);
+			if (TopRegion.found()) {
 				if (this.select != null) {
 					var color = select instanceof Item ? ((Item) select).color :
 						select instanceof Liquid ? ((Liquid) select).color
@@ -63,16 +63,16 @@ public abstract class BlockSelect<T extends UnlockableContent> extends Block {
 				} else {
 					Draw.color(Color.white);
 				}
-				Draw.rect(topRegion, this.x, this.y);
+				Draw.rect(TopRegion, this.x, this.y);
 			}
 		}
 		@Override
 		public void buildConfiguration(Table table) {
-			ItemSelection.buildTable(table, getSelectList(), () -> this.select, this::configure);
+			ItemSelection.buildTable(table, GetSelectList(), () -> this.select, this::configure);
 		}
 		@Override
 		public boolean onConfigureBuildTapped(Building other) {
-			if (!canSelect) return false;
+			if (!CanSelect) return false;
 			if (this == other) {
 				this.deselect();
 				this.configure((Object) null);
@@ -110,7 +110,7 @@ public abstract class BlockSelect<T extends UnlockableContent> extends Block {
 			try {
 				var name = read.str();
 				//System.out.println("read name: " + name);
-				select = getSelectFromName(name);
+				select = GetSelectFromName(name);
 			} catch (Exception ignored) {
 				//System.out.println("15");
 				System.out.println(ignored);

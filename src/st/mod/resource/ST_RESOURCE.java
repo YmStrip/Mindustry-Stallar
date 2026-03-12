@@ -9,25 +9,26 @@ import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.production.*;
 import mindustry.world.meta.BuildVisibility;
-import st.mod.UTIL_TOOLTIP;
+import st.mod.UtilTooltip;
 import st.mod.content.*;
 import st.mod.util.STooltipBuilder;
-import st.mod.item.ST_ITEM;
-import st.mod.content.ST_LIQUID;
+import st.mod.item.STItem;
+import st.mod.content.STLiquid;
 import st.mod.resource.entity.SMiner;
 
 
 public class ST_RESOURCE {
+	/*
 	public static STooltipBuilder inject(Block t) {
 		t.buildVisibility = BuildVisibility.shown;
-		return UTIL_TOOLTIP.tooltip(t.stats);
+		return UtilTooltip.Tooltip(t.stats);
 	}
 
 	public static STooltipBuilder inject(Block t, int level) {
-		return inject(t).techLevel(level);
+		return inject(t).TechLevel(level);
 	}
 	//[T1]
-	public static SMiner SHALLOW_MINER, DEEP_MINER, SPECIAL_MINER, CONCENTRATOR;
+	public static SMiner MinerShallow, DEEP_MINER, SPECIAL_MINER, CONCENTRATOR;
 	//time = 240 / (size * speed)
 	public static Drill SUPER_DRILL;
 	//泵
@@ -45,7 +46,7 @@ public class ST_RESOURCE {
 
 	public static void load() {
 		//[T1]
-		SHALLOW_MINER = new SMiner("SHALLOW_MINER") {{
+		MinerShallow = new SMiner("SHALLOW_MINER") {{
 			consumeLiquid(Liquids.water, 0.15f);
 			consumePower(4f);
 			size = 2;
@@ -54,12 +55,12 @@ public class ST_RESOURCE {
 			itemCapacity = 250;
 			results = ItemStack.with(Items.copper, 1, Items.lead, 1);
 			requirements(Category.production, ItemStack.with(
-				ST_ITEM.NANOTUBE, 100,
-				ST_ITEM.SUPERCONDUCTOR, 50,
+				STItem.Nanotube, 100,
+				STItem.Superconductor, 50,
 				Items.silicon, 50,
 				Items.titanium, 50
 			));
-			attribute = ST_ATTRIBUTE.SHALLOW_ORE;
+			attribute = STAttribute.OreShallow;
 			inject(this, 1);
 		}};
 		//
@@ -72,13 +73,13 @@ public class ST_RESOURCE {
 			itemCapacity = 250;
 			results = ItemStack.with(Items.titanium, 1, Items.thorium, 1);
 			requirements(Category.production, ItemStack.with(
-				ST_ITEM.CHROMAL, 50,
-				ST_ITEM.NANOTUBE, 50,
-				ST_ITEM.SUPERCONDUCTOR, 50,
+				STItem.Chromal, 50,
+				STItem.Nanotube, 50,
+				STItem.Superconductor, 50,
 				Items.thorium, 25,
 				Items.phaseFabric, 50
 			));
-			attribute = ST_ATTRIBUTE.DEEP_ORE;
+			attribute = STAttribute.OreDeep;
 			inject(this, 1);
 		}};
 		SPECIAL_MINER = new SMiner("SPECIAL_MINER") {{
@@ -90,13 +91,13 @@ public class ST_RESOURCE {
 			itemCapacity = 250;
 			results = ItemStack.with(Items.sand, 1, Items.coal, 1);
 			requirements(Category.production, ItemStack.with(
-				ST_ITEM.NANOTUBE, 50,
-				ST_ITEM.SUPERCONDUCTOR, 50,
+				STItem.Nanotube, 50,
+				STItem.Superconductor, 50,
 				Items.silicon, 50,
 				Items.titanium, 50,
 				Items.metaglass, 50
 			));
-			attribute = ST_ATTRIBUTE.SHALLOW_ORE;
+			attribute = STAttribute.OreShallow;
 			inject(this, 1);
 		}};
 		CONCENTRATOR = new SMiner("CONCENTRATOR") {{
@@ -107,10 +108,10 @@ public class ST_RESOURCE {
 			liquidCapacity = 250;
 			itemCapacity = 250;
 			requirements(Category.production, ItemStack.with(
-				ST_ITEM.NANOTUBE, 150,
-				ST_ITEM.SUPERCONDUCTOR, 50,
-				ST_ITEM.CHROMAL, 250,
-				ST_ITEM.METRYSTAl, 50,
+				STItem.Nanotube, 150,
+				STItem.Superconductor, 50,
+				STItem.Chromal, 250,
+				STItem.Metrystal, 50,
 				Items.plastanium, 150,
 				Items.phaseFabric, 100
 			));
@@ -122,7 +123,7 @@ public class ST_RESOURCE {
 				Items.phaseFabric, 2,
 				Items.surgeAlloy, 2
 			);
-			attribute = ST_ATTRIBUTE.BASIN;
+			attribute = STAttribute.Basin;
 			inject(this, 1);
 		}};
 
@@ -138,8 +139,8 @@ public class ST_RESOURCE {
 			hasPower = true;
 			warmupSpeed = 0.07f;
 			requirements(Category.production, ItemStack.with(
-				ST_ITEM.NANOTUBE, 100,
-				ST_ITEM.SUPERCONDUCTOR, 25,
+				STItem.Nanotube, 100,
+				STItem.Superconductor, 25,
 				Items.silicon, 50,
 				Items.titanium, 50
 			));
@@ -153,8 +154,8 @@ public class ST_RESOURCE {
 			hasPower = true;
 			size = 2;
 			requirements(Category.liquid, ItemStack.with(
-				ST_ITEM.NANOTUBE, 100,
-				ST_ITEM.SUPERCONDUCTOR, 25,
+				STItem.Nanotube, 100,
+				STItem.Superconductor, 25,
 				Items.metaglass, 150,
 				Items.titanium, 50
 			));
@@ -168,8 +169,8 @@ public class ST_RESOURCE {
 			rotateSpeed = 1.4f;
 			result = Liquids.water;
 			requirements(Category.production, ItemStack.with(
-				ST_ITEM.NANOTUBE, 150,
-				ST_ITEM.SUPERCONDUCTOR, 50,
+				STItem.Nanotube, 150,
+				STItem.Superconductor, 50,
 				Items.silicon, 100,
 				Items.metaglass, 100,
 				Items.titanium, 100,
@@ -185,11 +186,11 @@ public class ST_RESOURCE {
 			rotateSpeed = 1.4f;
 			result = Liquids.slag;
 			requirements(Category.production, ItemStack.with(
-				ST_ITEM.NANOTUBE, 175,
+				STItem.Nanotube, 175,
 				Items.metaglass, 150,
-				ST_ITEM.SUPERCONDUCTOR, 25,
+				STItem.Superconductor, 25,
 				Items.silicon, 200,
-				ST_ITEM.CHROMAL, 50,
+				STItem.Chromal, 50,
 				Items.plastanium, 50
 			));
 			inject(this, 1);
@@ -202,9 +203,9 @@ public class ST_RESOURCE {
 			rotateSpeed = 1.4f;
 			result = Liquids.cryofluid;
 			requirements(Category.production, ItemStack.with(
-				ST_ITEM.NANOTUBE, 150,
+				STItem.Nanotube, 150,
 				Items.metaglass, 150,
-				ST_ITEM.SUPERCONDUCTOR, 50,
+				STItem.Superconductor, 50,
 				Items.silicon, 175,
 				Items.titanium, 150,
 				Items.plastanium, 100
@@ -219,9 +220,9 @@ public class ST_RESOURCE {
 			rotateSpeed = 1.4f;
 			result = Liquids.oil;
 			requirements(Category.production, ItemStack.with(
-				ST_ITEM.NANOTUBE, 150,
-				ST_ITEM.SUPERCONDUCTOR, 50,
-				ST_ITEM.CHROMAL, 50,
+				STItem.Nanotube, 150,
+				STItem.Superconductor, 50,
+				STItem.Chromal, 50,
 				Items.metaglass, 150,
 				Items.silicon, 175,
 				Items.plastanium, 100
@@ -242,11 +243,11 @@ public class ST_RESOURCE {
 			hasPower = true;
 			warmupSpeed = 0.005f;
 			requirements(Category.production, ItemStack.with(
-				ST_ITEM.NANOTUBE, 50,
-				ST_ITEM.SUPERCONDUCTOR, 50,
-				ST_ITEM.CHROMAL, 150,
-				ST_ITEM.METRYSTAl, 50,
-				ST_ITEM.SUSPENDED, 50,
+				STItem.Nanotube, 50,
+				STItem.Superconductor, 50,
+				STItem.Chromal, 150,
+				STItem.Metrystal, 50,
+				STItem.Suspended, 50,
 				Items.phaseFabric, 50
 			));
 			inject(this, 2);
@@ -258,11 +259,11 @@ public class ST_RESOURCE {
 			hasPower = true;
 			size = 2;
 			requirements(Category.liquid, ItemStack.with(
-				ST_ITEM.NANOTUBE, 50,
-				ST_ITEM.SUPERCONDUCTOR, 50,
-				ST_ITEM.CHROMAL, 150,
-				ST_ITEM.METRYSTAl, 50,
-				ST_ITEM.SUSPENDED, 50,
+				STItem.Nanotube, 50,
+				STItem.Superconductor, 50,
+				STItem.Chromal, 150,
+				STItem.Metrystal, 50,
+				STItem.Suspended, 50,
 				Items.metaglass, 150
 			));
 			inject(this, 2);
@@ -272,7 +273,7 @@ public class ST_RESOURCE {
 		//2.56m power = 1 prod
 		RESOURCE_EXTRACTOR = new SMiner("RESOURCE_EXTRACTOR") {
 			{
-				consumeLiquid(ST_LIQUID.NANO_FLUID, 0.1f);
+				consumeLiquid(STLiquid.NanoFluid, 0.1f);
 				consumePower(72000f / 60f);
 				canOverdrive = true;
 				size = 5;
@@ -301,11 +302,11 @@ public class ST_RESOURCE {
 				);
 				researchCostMultiplier = 0.2f;
 				requirements(Category.production, ItemStack.with(
-					ST_ITEM.CHROMAL, 100,
-					ST_ITEM.METRYSTAl, 50,
-					ST_ITEM.DARK_ELEMENT, 1,
-					ST_ITEM.LIGHT_ELEMENT, 1,
-					ST_ITEM.ANTIMATTER, 50
+					STItem.Chromal, 100,
+					STItem.Metrystal, 50,
+					STItem.Darkmatter, 1,
+					STItem.LIGHT_ELEMENT, 1,
+					STItem.Antimatter, 50
 				));
 				inject(this, 3);
 			}
@@ -321,14 +322,14 @@ public class ST_RESOURCE {
 			craftEffect = Fx.shieldBreak;
 			researchCostMultiplier = 0.1f;
 			requirements(Category.production, ItemStack.with(
-				ST_ITEM.CHROMAL, 250,
-				ST_ITEM.SUPERCONDUCTOR, 50,
-				ST_ITEM.METRYSTAl, 50,
-				ST_ITEM.LIGHT_ELEMENT, 1,
-				ST_ITEM.DARK_ELEMENT, 1,
-				ST_ITEM.ANTIMATTER, 5
+				STItem.Chromal, 250,
+				STItem.Superconductor, 50,
+				STItem.Metrystal, 50,
+				STItem.LIGHT_ELEMENT, 1,
+				STItem.Darkmatter, 1,
+				STItem.Antimatter, 5
 			));
-			outputLiquid = new LiquidStack(ST_LIQUID.NANO_FLUID, 0.1f);
+			outputLiquid = new LiquidStack(STLiquid.NanoFluid, 0.1f);
 			inject(this, 3);
 		}};
 		MINI_ELEMENT_DRILL = new Drill("MINI_ELEMENT_DRILL") {{
@@ -337,12 +338,12 @@ public class ST_RESOURCE {
 			tier = 42;
 			drillTime = 240 / (0.5f);
 			requirements(Category.production, ItemStack.with(
-				ST_ITEM.CHROMAL, 150,
-				ST_ITEM.SUPERCONDUCTOR, 50,
-				ST_ITEM.METRYSTAl, 15,
-				ST_ITEM.ANTIMATTER, 25
+				STItem.Chromal, 150,
+				STItem.Superconductor, 50,
+				STItem.Metrystal, 15,
+				STItem.Antimatter, 25
 			));
 			inject(this, 1);
 		}};
-	}
+	}*/
 }

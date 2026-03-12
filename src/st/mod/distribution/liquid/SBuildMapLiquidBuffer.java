@@ -2,15 +2,15 @@ package st.mod.distribution.liquid;
 
 import mindustry.gen.Building;
 import mindustry.type.Liquid;
-import st.mod.util.SBuildMap;
+import st.mod.util.CountBuild;
 
-public class SBuildMapLiquidBuffer extends SBuildMap<BlockLiquidBuffer.BlockBufferLiquidBuild> {
+public class SBuildMapLiquidBuffer extends CountBuild<BlockLiquidBuffer.BlockBufferLiquidBuild> {
 	@Override
-	public boolean testBuild(Building build) {
+	public boolean Filter(Building build) {
 		return build instanceof BlockLiquidBuffer.BlockBufferLiquidBuild;
 	}
-	public void addAmount(Building building, Liquid liquid, float amount) {
-		var liquids = get(building.team);
+	public void AddAmount(Building building, Liquid liquid, float amount) {
+		var liquids = Get(building.team);
 		for (var i : liquids) {
 			if (amount > 0 && !i.acceptLiquid(building, liquid)) continue;
 			var canAdd = Math.min(amount, i.block.liquidCapacity - i.liquids.get(liquid));
@@ -19,8 +19,8 @@ public class SBuildMapLiquidBuffer extends SBuildMap<BlockLiquidBuffer.BlockBuff
 			if (amount <= 0) return;
 		}
 	}
-	public float getAmount(Building building, Liquid liquid) {
-		var liquids = get(building.team);
+	public float GetAmount(Building building, Liquid liquid) {
+		var liquids = Get(building.team);
 		var has = 0f;
 		//System.out.println("liquids"+liquids.size());
 		for (var i : liquids) {
@@ -31,8 +31,8 @@ public class SBuildMapLiquidBuffer extends SBuildMap<BlockLiquidBuffer.BlockBuff
 		}
 		return has;
 	}
-	public float getCapacity(Building building, Liquid liquid) {
-		var liquids = get(building.team);
+	public float GetCapacity(Building building, Liquid liquid) {
+		var liquids = Get(building.team);
 		var capacity = 0f;
 		for (var i : liquids) {
 			var buildAmount = i.block.liquidCapacity;

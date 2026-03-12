@@ -429,7 +429,7 @@ public class ST_BULLET {
 		public BulletType buildBullet(final SBulletBuilder.SBulletDamageProv prov) {
 			return new BasicBulletType() {
 				{
-					this.sprite = ST.atlasName("TRIANGLE");
+					this.sprite = ST.AtlasName("TRIANGLE");
 					this.lifetime = -1.0F;
 					this.speed = -1.0F;
 					this.range = -1.0F;
@@ -445,7 +445,7 @@ public class ST_BULLET {
 					this.homingRange = prov.width * 30.0F;
 					this.trailEffect = new ParticleEffect() {
 						{
-							this.region = ST.atlasName("SQUARE");
+							this.region = ST.AtlasName("SQUARE");
 							this.colorFrom = prov.color;
 							this.colorTo = Color.white;
 							this.particles = 1;
@@ -464,7 +464,7 @@ public class ST_BULLET {
 							this.colorFrom = prov.color;
 							this.colorTo = Color.white;
 							this.particles = 1;
-							this.region = ST.atlasName("SQUARE");
+							this.region = ST.AtlasName("SQUARE");
 							this.spin = 60.0F;
 							this.sizeFrom = prov.width / 4.0F;
 							this.sizeTo = 0.0F;
@@ -487,7 +487,7 @@ public class ST_BULLET {
 					this.lifetime = -1.0F;
 					this.speed = -1.0F;
 					this.range = -1.0F;
-					this.sprite = ST.atlasName("ORB");
+					this.sprite = ST.AtlasName("ORB");
 					this.width = prov.width;
 					this.height = prov.width;
 					this.frontColor = prov.color;

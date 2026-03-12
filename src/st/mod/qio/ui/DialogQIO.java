@@ -1,7 +1,6 @@
 package st.mod.qio.ui;
 
 import arc.Core;
-import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.Table;
@@ -10,19 +9,17 @@ import mindustry.Vars;
 import mindustry.core.GameState;
 import mindustry.core.UI;
 import mindustry.ctype.UnlockableContent;
-import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
-import mindustry.world.blocks.ItemSelection;
 import st.ST;
-import st.mod.qio.STORE_QIO;
+import st.mod.qio.STQIO;
 import st.mod.qio.entity.QMap;
 
 import static mindustry.Vars.*;
 
 public class DialogQIO extends Dialog {
 	public DialogQIO() {
-		super(ST.ui("qio"));
+		super(ST.UI("qio"));
 	}
 	private Table createItem(UnlockableContent item, float count, float max) {
 		var table = new Table();
@@ -55,7 +52,7 @@ public class DialogQIO extends Dialog {
 			}}).left().fillX().growX().row();
 			var container = new Table();
 			itemList.add(container).growX().growY().fillX().fillY();
-			for (var i : map.map.entrySet()) {
+			for (var i : map.Map.entrySet()) {
 				var item = get.content(i.getKey());
 				if (item == null) continue;
 				var builder = container.add(createItem(item, i.getValue().intValue(), max)).left().fillX().growX().marginBottom(2);
@@ -78,9 +75,9 @@ public class DialogQIO extends Dialog {
 		top();
 		var builder = cont.pane(table -> {
 			table.setWidth(getMaxWidth() * 0.8f);
-			buildMapView(table, ST.ui("qio_item"), STORE_QIO.NETWORK.ITEM, STORE_QIO.NETWORK.ITEM.capacity, name -> Vars.content.item(name));
-			buildMapView(table, ST.ui("qio_liquid"), STORE_QIO.NETWORK.LIQUID, STORE_QIO.NETWORK.LIQUID.capacity, name -> Vars.content.liquid(name));
-			buildMapView(table, ST.ui("qio_unit"), STORE_QIO.NETWORK.UNIT, STORE_QIO.NETWORK.UNIT.capacity, name -> Vars.content.unit(name));
+			buildMapView(table, ST.UI("qio_item"), STQIO.Network.Item, STQIO.Network.Item.Capacity, name -> Vars.content.item(name));
+			buildMapView(table, ST.UI("qio_liquid"), STQIO.Network.Liquid, STQIO.Network.Liquid.Capacity, name -> Vars.content.liquid(name));
+			buildMapView(table, ST.UI("qio_unit"), STQIO.Network.Unit, STQIO.Network.Unit.Capacity, name -> Vars.content.unit(name));
 		}).fillX().growX().fillY().growY().marginBottom(4).top();
 		if (Core.app.isMobile()) {
 			builder.pad(20);

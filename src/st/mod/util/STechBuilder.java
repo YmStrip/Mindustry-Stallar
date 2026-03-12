@@ -11,80 +11,72 @@ import mindustry.type.SectorPreset;
 import mindustry.world.Block;
 
 public class STechBuilder {
-	public TechTree.TechNode tech;
-	public UnlockableContent content;
-	public UnlockableContent parent;
+	public TechTree.TechNode Tech;
+	public UnlockableContent Content;
+	public UnlockableContent Parent;
 
-	public STechBuilder parent(UnlockableContent item) {
-		if (content instanceof Block b) {
+	public STechBuilder Parent(UnlockableContent item) {
+		if (Content instanceof Block b) {
 			if (b.researchCostMultiplier <= 0) b.researchCostMultiplier = 1;
 		}
 
-		parent = item;
-		tech = new TechTree.TechNode(item.techNode, content, content.researchRequirements());
-		if ((content instanceof Item) || (content instanceof Liquid)) {
-			require(new Objectives.Produce(content));
+		Parent = item;
+		Tech = new TechTree.TechNode(item.techNode, Content, Content.researchRequirements());
+		if ((Content instanceof Item) || (Content instanceof Liquid)) {
+			Require(new Objectives.Produce(Content));
 		}
-		if ((content instanceof SectorPreset) && (item instanceof SectorPreset s)) {
-			require(new Objectives.SectorComplete(s));
+		if ((Content instanceof SectorPreset) && (item instanceof SectorPreset s)) {
+			Require(new Objectives.SectorComplete(s));
 		}
 		return this;
 	}
 
 	public STechBuilder(UnlockableContent item) {
-		content = item;
+		Content = item;
 	}
 	public STechBuilder(UnlockableContent parent, UnlockableContent item) {
 		this(item);
-		this.parent(parent);
+		this.Parent(parent);
 	}
 
-
-	//并行的
-	public STechBuilder next(UnlockableContent item, child child) {
+	public STechBuilder Next(UnlockableContent item, Ch child) {
 		var v = new STechBuilder(item);
-		v.parent(parent);
-		child.child(v);
+		v.Parent(Parent);
+		child.Child(v);
 		return this;
 	}
-
-	public STechBuilder next(UnlockableContent item) {
-		return next(item, (t) -> {
+	public STechBuilder Next(UnlockableContent item) {
+		return Next(item, (t) -> {
 		});
 	}
-
-	public STechBuilder require(ItemStack[] itemStack) {
-		tech.requirements = itemStack;
+	public STechBuilder Require(ItemStack[] itemStack) {
+		Tech.requirements = itemStack;
 		return this;
 	}
-
-	public STechBuilder require(UnlockableContent item) {
-		return require(new Objectives.Research(item));
+	public STechBuilder Require(UnlockableContent item) {
+		return Require(new Objectives.Research(item));
 	}
-
-	public STechBuilder require(Objectives.Objective o) {
-		tech.objectives.add(o);
+	public STechBuilder Require(Objectives.Objective o) {
+		Tech.objectives.add(o);
 		return this;
 	}
-
 	@FunctionalInterface
-	public interface child {
-		void child(STechBuilder t);
+	public interface Ch {
+		void Child(STechBuilder t);
 	}
 	/**
 	 * add child , and return current builder
 	 * @param item content
 	 * @return current builder
 	 */
-	public STechBuilder add(UnlockableContent item) {
-		this.add(item, (t) -> {});
+	public STechBuilder Add(UnlockableContent item) {
+		this.Add(item, (t) -> {});
 		return this;
 	}
-
-	public STechBuilder add(UnlockableContent item, child child) {
+	public STechBuilder Add(UnlockableContent item, Ch child) {
 		var v = new STechBuilder(item);
-		v.parent(content);
-		child.child(v);
+		v.Parent(Content);
+		child.Child(v);
 		return this;
 	}
 	/**
@@ -92,9 +84,9 @@ public class STechBuilder {
 	 * @param item child content
 	 * @return child builder
 	 */
-	public STechBuilder children(UnlockableContent item) {
+	public STechBuilder Children(UnlockableContent item) {
 		var v = new STechBuilder(item);
-		v.parent(content);
+		v.Parent(Content);
 		return v;
 	}
 }
