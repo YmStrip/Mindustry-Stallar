@@ -13,8 +13,8 @@ import st.mod.ui.entity.DialogPane;
 
 
 public class DialogModular extends DialogPane {
-	public BlockModular.BlockModulerBuilding Building;
-	public DialogModular(BlockModular.BlockModulerBuilding building) {
+	public BlockModular.BlockModularBuilding Building;
+	public DialogModular(BlockModular.BlockModularBuilding building) {
 		Building = building;
 		Pane("modular_current", (table, param) -> {
 			var target = (param instanceof mindustry.gen.Building tar) ? tar : building;

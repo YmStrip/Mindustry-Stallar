@@ -9,14 +9,14 @@ public class BlockModularController extends BlockModular {
 		MaxCount = 4;
 	}
 	@Override
-	public void HandleStructAdd(StructModular struct, BlockModulerBuilding building) {
+	public void HandleStructAdd(StructModular struct, BlockModularBuilding building) {
 		struct.CapacityBuilding += CapacityBuilding;
 	}
 	@Override
-	public void HandleStructRemove(StructModular struct, BlockModulerBuilding building) {
+	public void HandleStructRemove(StructModular struct, BlockModularBuilding building) {
 		struct.CapacityBuilding -= CapacityBuilding;
 	}
-	public class BlockModularControllerBuilding extends BlockModular.BlockModulerBuilding {
+	public class BlockModularControllerBuilding extends BlockModularBuilding {
 
 	}
 }

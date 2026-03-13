@@ -62,7 +62,7 @@ public class STModular {
 			size = 2;
 			CapacityTransItem = 16;
 			CapacityTransLiquid = 120;
-			CapacityTransUnit = 1;
+			CapacityTransUnit = 3/60f;
 			requirements(Category.crafting, ItemStack.with(
 				Items.silicon, 25,
 				Items.copper, 25,

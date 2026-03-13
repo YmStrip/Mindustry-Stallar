@@ -14,13 +14,14 @@ import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.ui.Styles;
-import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BuildVisibility;
 import st.ST;
 import st.mod.modular.STModular;
 import st.mod.modular.entity.Recipe;
+import st.mod.modular.struct.StructModular;
 import st.mod.modular.ui.DialogModular;
+import st.mod.multiblock.STMultiBlock;
 import st.mod.ui.UtilUI;
 
 import java.util.Arrays;
@@ -133,7 +134,7 @@ public class BlockModularFactory extends BlockModular {
 			}
 		}
 	}
-	public class BlockModularFactoryBuilding extends BlockModular.BlockModulerBuilding {
+	public class BlockModularFactoryBuilding extends BlockModularBuilding {
 		public float Boostrap = 0;
 		public float BoostrapTime = 90;
 		public float Progress = 0;
@@ -154,10 +155,17 @@ public class BlockModularFactory extends BlockModular {
 			RecipeUpdate();
 		}
 		public void RecipeUpdate() {
+			var str = STMultiBlock.StructByBuilding.get(this);
+			if (str instanceof StructModular st) {
+				st.RemoveViewIO(this);
+			}
 			var old = Recipe;
 			this.Recipe = STModular.RecipeByName.get(RecipeName);
 			if (Recipe != old) {
 				Progress = 0;
+			}
+			if (str instanceof StructModular st) {
+				st.AddViewIO(this);
 			}
 		}
 		@Override
