@@ -6,13 +6,10 @@ import mindustry.content.Items;
 import mindustry.game.EventType;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
-import st.ST;
 import st.id.entity.IDEventEmitter;
 import st.mod.STTech;
 import st.mod.UtilTooltip;
-import st.mod.modular.block.BlockModularController;
-import st.mod.modular.block.BlockModularRouter;
-import st.mod.modular.block.BlockModularFactory;
+import st.mod.modular.block.*;
 import st.mod.modular.entity.*;
 import st.mod.util.STooltipBuilder;
 
@@ -31,6 +28,7 @@ public class STModular {
 	//
 	public static BlockModularController Controller;
 	public static BlockModularRouter Router;
+	public static BlockModularStorage Storage;
 	//
 	public static HashMap<String, Recipe> RecipeByName = new HashMap<>();
 	public static HashMap<String, HashSet<Recipe>> RecipeByFactoryName = new HashMap<>();
@@ -48,27 +46,42 @@ public class STModular {
 		Controller = new BlockModularController("Controller") {{
 			size = 2;
 			CapacityBuilding = 6;
-			MaxCount = 4;
-			requirements(Category.crafting, ItemStack.with(
+			requirements(Category.effect, ItemStack.with(
 				Items.silicon, 75,
 				Items.metaglass, 25,
 				Items.graphite, 25,
 				Items.copper, 100,
 				Items.lead, 50
 			));
+			consumePower(24f / 60);
 			Inject(this, 1);
 		}};
 		Router = new BlockModularRouter("Router") {{
 			size = 2;
 			CapacityTransItem = 16;
 			CapacityTransLiquid = 120;
-			CapacityTransUnit = 3/60f;
-			requirements(Category.crafting, ItemStack.with(
+			CapacityTransUnit = 3 / 60f;
+			requirements(Category.effect, ItemStack.with(
 				Items.silicon, 25,
 				Items.copper, 25,
 				Items.metaglass, 25,
 				Items.lead, 25
 			));
+			consumePower(12f / 60);
+			Inject(this, 1);
+		}};
+		Storage = new BlockModularStorage("Storage") {{
+			size = 3;
+			itemCapacity = 300;
+			liquidCapacity = 120;
+			CapacityUnit = 4f;
+			requirements(Category.effect, ItemStack.with(
+				Items.copper, 120,
+				Items.lead, 80,
+				Items.metaglass, 50,
+				Items.silicon, 25
+			));
+			consumePower(8f / 60);
 			Inject(this, 1);
 		}};
 		//
@@ -80,6 +93,7 @@ public class STModular {
 				Items.copper, 25,
 				Items.lead, 25
 			));
+			consume(new ConsumePowerRecipe(60f / 60));
 			Inject(this, 1);
 		}};
 		Refinery = new BlockModularFactory("Refinery") {{
@@ -91,6 +105,7 @@ public class STModular {
 				Items.copper, 25,
 				Items.lead, 25
 			));
+			consume(new ConsumePowerRecipe(180f / 60));
 			Inject(this, 1);
 		}};
 		Turbine = new BlockModularFactory("Turbine") {{
@@ -113,6 +128,7 @@ public class STModular {
 				Items.lead, 25,
 				Items.titanium, 50
 			));
+			consume(new ConsumePowerRecipe(120f / 60));
 			Inject(this, 2);
 		}};
 		Nuclear = new BlockModularFactory("Nuclear") {{
@@ -145,14 +161,14 @@ public class STModular {
 		//
 		RecipeGraphite = new Recipe("RecipeGraphite") {{
 			CraftTime = 90.0F;
-			InputPower(1F);
+			InputPower(10f / 60f);
 			Input(Items.coal, 2);
 			Output(Items.graphite, 1);
 			Inject(this, Constructor, 1);
 		}};
 		RecipeSilicon = new Recipe("RecipeSilicon") {{
 			CraftTime = 40.0F;
-			InputPower(1F);
+			InputPower(30f / 60f);
 			Input(Items.coal, 1);
 			Input(Items.sand, 2);
 			Output(Items.silicon, 1);
@@ -160,7 +176,7 @@ public class STModular {
 		}};
 		RecipeSiliconCentrifugal = new Recipe("RecipeSiliconCentrifugal") {{
 			CraftTime = 60.0F;
-			InputPower(1.5F);
+			InputPower(60f / 60f);
 			Input(Items.coal, 2);
 			Input(Items.sand, 2);
 			Output(Items.silicon, 1);
@@ -189,11 +205,19 @@ public class STModular {
 		builder.Add("capacity_building", t.CapacityBuilding);
 		return builder;
 	}
+	public static STooltipBuilder Inject(BlockModularStorage t, int level) {
+		var builder = UtilTooltip.Tooltip(t.stats).TechLevel(level);
+		builder.Add("modular_capacity_unit", t.CapacityUnit);
+		return builder;
+	}
 	public static STooltipBuilder Inject(BlockModularRouter t, int level) {
 		var builder = UtilTooltip.Tooltip(t.stats).TechLevel(level);
 		builder.Add("capacity_trans_item", t.CapacityTransItem);
 		builder.Add("capacity_trans_liquid", t.CapacityTransLiquid);
 		builder.Add("capacity_trans_unit", t.CapacityTransUnit);
+		builder.Add("capacity_buffer_item", t.CapacityBufferItem);
+		builder.Add("capacity_buffer_liquid", t.CapacityBufferLiquid);
+		builder.Add("capacity_buffer_unit", t.CapacityBufferUnit);
 		return builder;
 	}
 	public static STooltipBuilder Inject(BlockModularFactory t) {

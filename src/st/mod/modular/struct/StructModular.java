@@ -4,13 +4,15 @@ package st.mod.modular.struct;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import st.mod.modular.block.BlockModularFactory;
+import st.mod.modular.block.BlockModularStorage;
+import st.mod.modular.entity.Recipe;
 import st.mod.multiblock.STMultiBlock;
 import st.mod.multiblock.Struct;
 import st.mod.modular.block.BlockModular;
 import st.mod.modular.block.BlockModularController;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
+
 
 public class StructModular extends Struct {
 	//view.
@@ -21,34 +23,47 @@ public class StructModular extends Struct {
 	public float CapacityTransLiquid = 60;
 	public float CapacityTransItem = 10;
 	public float CapacityTransUnit = 2 / 60f;
-	public float StockTransLiquid = 0;
-	public float StockTransItem = 0;
-	public float StockTransUnit = 0;
+	public float CapacityBufferLiquid = 120f;
+	public float CapacityBufferItem = 60f;
+	public float CapacityBufferUnit = 1f;
+	public float BufferLiquidInput = 0;
+	public float BufferItemInput = 0;
+	public float BufferUnitInput = 0;
+	public float BufferLiquidOutput = 0;
+	public float BufferItemOutput = 0;
+	public float BufferUnitOutput = 0;
+
+	public static class IO {
+		public IO() {
+		}
+		public IO(Recipe recipe) {
+			for (var i : recipe.Input.keySet()) {
+				Input.put(i, recipe.Input.get(i).Value());
+			}
+			for (var i : recipe.Output.keySet()) {
+				Output.put(i, recipe.Output.get(i).Value());
+			}
+		}
+		public HashMap<UnlockableContent, Float> Input = new HashMap<>();
+		public HashMap<UnlockableContent, Float> Output = new HashMap<>();
+		public float Weight = 1;
+	}
+	public void Schedule() {
+		//update weight
+		//sc
+
+	}
 	//view.readonly
-	public HashMap<UnlockableContent, HashSet<BlockModularFactory.BlockModularFactoryBuilding>> Input = new HashMap<>();
-	public HashMap<UnlockableContent, HashSet<BlockModularFactory.BlockModularFactoryBuilding>> Output = new HashMap<>();
-	public HashMap<UnlockableContent, HashMap<BlockModular.BlockModularBuilding, Float>> Stocked = new HashMap<>();
-	public HashMap<UnlockableContent, Float> Stock = new HashMap<>();
+	public HashMap<BlockModularFactory.BlockModularFactoryBuilding, IO> IO = new HashMap<>();
+	public HashSet<BlockModularStorage.BlockModularStorageBuild> Storage = new HashSet<>();
+	public HashMap<UnlockableContent, Float> StorageCount = new HashMap<>();
 	//view.state diff by add and remove
 	public boolean Overload = false;
-	public boolean OverloadMax = false;
 	public boolean OverloadCapacity = false;
 	public boolean OverloadController = false;
 	//get state
 	protected void Overload() {
-		Overload = OverloadController || OverloadCapacity || OverloadMax;
-	}
-	protected void OverloadMax() {
-		var p = false;
-		for (var i : Block.keySet()) {
-			if (i instanceof BlockModular b && b.MaxCount > 0) {
-				if (Block.getOrDefault(i, 0) > b.MaxCount) {
-					OverloadMax = true;
-					return;
-				}
-			}
-		}
-		OverloadMax = false;
+		Overload = OverloadController || OverloadCapacity;
 	}
 	protected void OverloadCapacity() {
 		var capacity = this.CapacityBuildingDefault;
@@ -59,18 +74,7 @@ public class StructModular extends Struct {
 	}
 	//find the max and check
 	protected void OverloadController() {
-		if (Controller.isEmpty()) {
-			OverloadController = false;
-			CapacityController = 4;
-		}
-		var max = 0;
-		for (var i : Controller) {
-			if (i.block instanceof BlockModularController b) {
-				if (max < b.MaxCount) max = b.MaxCount;
-			}
-		}
-		OverloadController = Controller.size() > max;
-		CapacityController = max;
+		OverloadController = Controller.size() > CapacityController;
 	}
 	@Override
 	public boolean Add(mindustry.gen.Building building) {
@@ -78,14 +82,10 @@ public class StructModular extends Struct {
 			return false;
 		}
 		if (!super.Add(building)) return false;
+		b1.Struct = this;
 		if (building.block instanceof BlockModular b) {
 			b.HandleStructAdd(this, b1);
 		}
-		if (building instanceof BlockModularFactory.BlockModularFactoryBuilding fb) {
-			AddViewIO(fb);
-		}
-		AddViewStorage(b1);
-		OverloadMax();
 		OverloadCapacity();
 		OverloadController();
 		Overload();
@@ -97,14 +97,10 @@ public class StructModular extends Struct {
 			return false;
 		}
 		if (!super.Remove(building)) return false;
+		b1.Struct = null;
 		if (building.block instanceof BlockModular b) {
 			b.HandleStructRemove(this, b1);
 		}
-		if (building instanceof BlockModularFactory.BlockModularFactoryBuilding fb) {
-			RemoveViewIO(fb);
-		}
-		RemoveViewStorage(b1);
-		OverloadMax();
 		OverloadCapacity();
 		OverloadController();
 		Overload();
@@ -134,105 +130,99 @@ public class StructModular extends Struct {
 			}
 		});
 	}
-	public boolean AddViewIO(BlockModularFactory.BlockModularFactoryBuilding building) {
+	public boolean AddIO(BlockModularFactory.BlockModularFactoryBuilding building) {
 		if (Building.contains(building)) return false;
-		if (building.Recipe != null) {
-			for (var i : building.Recipe.Input.keySet()) {
-				Input.putIfAbsent(i, new HashSet<>());
-				var def = Input.get(i);
-				def.add(building);
-			}
-			for (var i : building.Recipe.Output.keySet()) {
-				Output.putIfAbsent(i, new HashSet<>());
-				var def = Output.get(i);
-				def.add(building);
-			}
-		}
+		if (building.Recipe == null) return false;
+		IO.put(building, new IO(building.Recipe));
 		return true;
 	}
-	public boolean RemoveViewIO(BlockModularFactory.BlockModularFactoryBuilding building) {
+	public boolean RemoveIO(BlockModularFactory.BlockModularFactoryBuilding building) {
 		if (!Building.contains(building)) return false;
-		if (building.Recipe != null) {
-			for (var i : building.Recipe.Input.keySet()) {
-				var def = Input.get(i);
-				if (def != null) {
-					def.remove(building);
-				}
-				assert def != null;
-				if (def.isEmpty()) Input.remove(i);
-			}
-			for (var i : building.Recipe.Output.keySet()) {
-				var def = Output.get(i);
-				if (def != null) {
-					def.remove(building);
-				}
-				assert def != null;
-				if (def.isEmpty()) Output.remove(i);
-			}
-		}
+		IO.remove(building);
 		return true;
 	}
-	public boolean AddViewStorage(BlockModular.BlockModularBuilding building) {
+	public boolean AddStorage(BlockModularStorage.BlockModularStorageBuild building) {
 		if (Building.contains(building)) return false;
+		Storage.add(building);
 		for (var i : Vars.content.items()) {
-			var value = building.items.get(i);
-			if (value > 0) ChangeViewStorage(building, i, value);
+			var def = building.items.get(i);
+			if (def > 0) {
+				StorageCount.put(i, StorageCount.getOrDefault(i, 0f) + def);
+			}
 		}
 		for (var i : Vars.content.liquids()) {
-			var value = building.liquids.get(i);
-			if (value > 0) ChangeViewStorage(building, i, value);
-		}
-		for (var i : building.Unit.keySet()) {
-			var value = building.Unit.get(i);
-			if (value > 0) ChangeViewStorage(building, i, value);
-		}
-		return true;
-	}
-	public boolean RemoveViewStorage(BlockModular.BlockModularBuilding building) {
-		if (!Building.contains(building)) return false;
-		for (var i : Vars.content.items()) {
-			var value = building.items.get(i);
-			if (value > 0) ChangeViewStorage(building, i, -value);
-		}
-		for (var i : Vars.content.liquids()) {
-			var value = building.liquids.get(i);
-			if (value > 0) ChangeViewStorage(building, i, -value);
-		}
-		for (var i : building.Unit.keySet()) {
-			var value = building.Unit.get(i);
-			if (value > 0) ChangeViewStorage(building, i, -value);
-		}
-		return true;
-	}
-	public void ChangeViewStorage(BlockModular.BlockModularBuilding building, UnlockableContent type, float diffValue) {
-		if (diffValue > 0) {
-			Stock.put(type, Stock.getOrDefault(type, 0f) + diffValue);
-			//
-			Stocked.computeIfAbsent(type, k -> new HashMap<>());
-			var stockedMap = Stocked.get(type);
-			stockedMap.put(building, stockedMap.getOrDefault(building, 0f) + diffValue);
-		} else {
-			var newStockValue = Stock.getOrDefault(type, 0f) + diffValue;
-			if (newStockValue <= 0) Stock.remove(type);
-			else Stock.put(type, newStockValue);
-			//
-			var stockedMap = Stocked.get(type);
-			if (stockedMap != null) {
-				var newStockedMapValue = stockedMap.getOrDefault(building, 0f) + diffValue;
-				if (newStockedMapValue <= 0) stockedMap.remove(building);
-				else stockedMap.put(building, newStockedMapValue);
-				if (stockedMap.keySet().isEmpty()) {
-					Stocked.remove(type);
-				}
+			var def = building.liquids.get(i);
+			if (def > 0) {
+				StorageCount.put(i, StorageCount.getOrDefault(i, 0f) + def);
 			}
 		}
+		for (var i : building.Unit.keySet()) {
+			var def = building.Unit.get(i);
+			if (def > 0) {
+				StorageCount.put(i, StorageCount.getOrDefault(i, 0f) + def);
+			}
+		}
+		return true;
+	}
+	public boolean RemoveStorage(BlockModularStorage.BlockModularStorageBuild building) {
+		if (!Building.contains(building)) return false;
+		Storage.remove(building);
+		for (var i : Vars.content.items()) {
+			var def = building.items.get(i);
+			if (def > 0) {
+				StorageCount.put(i, Math.max(StorageCount.getOrDefault(i, 0f) - def, 0));
+			}
+		}
+		for (var i : Vars.content.liquids()) {
+			var def = building.liquids.get(i);
+			if (def > 0) {
+				StorageCount.put(i, Math.max(StorageCount.getOrDefault(i, 0f) - def, 0));
+			}
+		}
+		for (var i : building.Unit.keySet()) {
+			var def = building.Unit.get(i);
+			if (def > 0) {
+				StorageCount.put(i, Math.max(StorageCount.getOrDefault(i, 0f) - def, 0));
+			}
+		}
+		return true;
+	}
+	public boolean HasRecourse(UnlockableContent type, float count) {
+		return StorageCount.getOrDefault(type, 0f) >= count;
+	}
+	public float AddRecourse(UnlockableContent type, float count) {
+		for (var i : Storage) {
+			count -= i.AddRecourse(type, count);
+			if (count <= 0) break;
+		}
+		return count;
+	}
+	public float RemoveRecourse(UnlockableContent type, float count) {
+		var total = count;
+		for (var i : Storage) {
+			count -= i.RemoveRecourse(type, count);
+			if (count <= 0) return total;
+		}
+		return total - count;
 	}
 	@Override
 	public void HandleTick() {
 		super.HandleTick();
-		//update trans stock , 1s = 60t
-		StockTransItem = Math.min(StockTransItem + CapacityTransItem / 60f, CapacityTransItem);
-		StockTransLiquid = Math.min(StockTransLiquid + CapacityTransLiquid / 60f, CapacityTransLiquid);
-		StockTransUnit = Math.min(StockTransUnit + CapacityTransUnit / 60f, CapacityTransUnit);
+		//update buffer
+		BufferItemInput = Math.min(BufferItemInput + CapacityTransItem / 60f, CapacityBufferItem);
+		BufferLiquidInput = Math.min(BufferLiquidInput + CapacityTransLiquid / 60f, CapacityBufferLiquid);
+		BufferUnitInput = Math.min(BufferUnitInput + CapacityTransUnit / 60f, CapacityBufferUnit);
+		BufferItemOutput = Math.min(BufferItemOutput + CapacityTransItem / 60f, CapacityBufferItem);
+		BufferLiquidOutput = Math.min(BufferLiquidOutput + CapacityTransLiquid / 60f, CapacityBufferLiquid);
+		BufferUnitOutput = Math.min(BufferUnitOutput + CapacityTransUnit / 60f, CapacityBufferUnit);
+		//send recourse to IO Map
+		Schedule();
+	}
+	private static Random Rand = new Random();
+	private void Wrap(ArrayList list) {
+		var size = list.size();
+		if (size > 1) {
+			Collections.swap(list, 0, Rand.nextInt(list.size()));
+		}
 	}
 }

@@ -6,23 +6,27 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.gen.Building;
+import mindustry.type.Item;
+import mindustry.type.Liquid;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
+import mindustry.world.blocks.payloads.Payload;
 import org.json.JSONObject;
 import st.mod.modular.ui.DialogModular;
 import st.mod.multiblock.STMultiBlock;
 import st.mod.modular.struct.StructModular;
 
-import java.util.Arrays;
+
 import java.util.HashMap;
 
 public class BlockModular extends Block {
-	public int MaxCount = -1;
+	public float CapacityUnit = 0;
 	public BlockModular(String name) {
 		super(name);
 		update = true;
 		solid = true;
 		sync = true;
+		configurable = true;
 	}
 	public void ViewConfig(Building building, Table table, DialogModular dialog) {
 
@@ -36,6 +40,10 @@ public class BlockModular extends Block {
 	}
 	public class BlockModularBuilding extends Building {
 		public HashMap<UnitType, Float> Unit = new HashMap<>();
+		/**
+		 * view.optimize maintain by StructModular [Add|Remove]
+		 */
+		public StructModular Struct;
 		@Override
 		public void placed() {
 			super.placed();
@@ -60,7 +68,7 @@ public class BlockModular extends Block {
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			var str = Arrays.toString(read.b(read.i()));
+			var str = new String(read.b(read.i()));
 			try {
 				var json = new JSONObject(str);
 				for (var i : json.keySet()) {
@@ -71,6 +79,18 @@ public class BlockModular extends Block {
 				}
 			} catch (Exception e) {
 			}
+		}
+		@Override
+		public boolean acceptItem(Building source, Item item) {
+			return false;
+		}
+		@Override
+		public boolean acceptLiquid(Building source, Liquid liquid) {
+			return false;
+		}
+		@Override
+		public boolean acceptPayload(Building source, Payload payload) {
+			return false;
 		}
 	}
 }

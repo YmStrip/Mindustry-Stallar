@@ -9,12 +9,23 @@ import arc.struct.EnumSet;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.content.Blocks;
 import mindustry.content.Fx;
+import mindustry.content.Items;
+import mindustry.ctype.UnlockableContent;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
+import mindustry.type.Item;
+import mindustry.type.Liquid;
+import mindustry.type.LiquidStack;
+import mindustry.type.UnitType;
 import mindustry.ui.Styles;
+import mindustry.world.Block;
+import mindustry.world.blocks.payloads.Payload;
+import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.BuildVisibility;
 import st.ST;
 import st.mod.modular.STModular;
@@ -24,7 +35,8 @@ import st.mod.modular.ui.DialogModular;
 import st.mod.multiblock.STMultiBlock;
 import st.mod.ui.UtilUI;
 
-import java.util.Arrays;
+
+import java.util.HashMap;
 import java.util.Objects;
 
 
@@ -34,9 +46,6 @@ public class BlockModularFactory extends BlockModular {
 	public TextureRegion IconHeat;
 	public TextureRegion IconTop;
 	//
-	public Effect EffectCraft = Fx.none;
-	public Effect EffectUpdate = Fx.none;
-	//
 	public BlockModularFactory(String name) {
 		super(name);
 		buildVisibility = BuildVisibility.shown;
@@ -44,8 +53,11 @@ public class BlockModularFactory extends BlockModular {
 		hasLiquids = true;
 		hasPower = true;
 		flags = EnumSet.of(BlockFlag.factory);
-		drawArrow = false;
 		configurable = true;
+		itemCapacity = 24;
+		liquidCapacity = 120;
+		CapacityUnit = 2;
+		outputsPower = true;
 		config(String.class, (building, string) -> {
 			if (building instanceof BlockModularFactoryBuilding b) {
 				b.RecipeName = string;
@@ -66,6 +78,14 @@ public class BlockModularFactory extends BlockModular {
 		Draw.scl(size / 5f);
 		Draw.rect(uiIcon, x, y, rotation);
 		Draw.scl(scl);
+	}
+	@Override
+	public void HandleStructAdd(StructModular struct, BlockModularBuilding building) {
+		if (building instanceof BlockModularFactoryBuilding b) struct.AddIO(b);
+	}
+	@Override
+	public void HandleStructRemove(StructModular struct, BlockModularBuilding building) {
+		if (building instanceof BlockModularFactoryBuilding b) struct.RemoveIO(b);
 	}
 	@Override
 	public void ViewConfig(Building building, Table table, DialogModular dialog) {
@@ -135,29 +155,130 @@ public class BlockModularFactory extends BlockModular {
 		}
 	}
 	public class BlockModularFactoryBuilding extends BlockModularBuilding {
+		public st.mod.modular.entity.Recipe Recipe;
+		public String RecipeName = "";
 		public float Boostrap = 0;
 		public float BoostrapTime = 90;
 		public float Progress = 0;
-		protected void ProgressReduce() {
+		public boolean Filled = false;
+		public boolean Producing = false;
+		public boolean RecipeInited = false;
+		public HashMap<UnlockableContent, Float> Input = new HashMap<>();
+		public HashMap<UnlockableContent, Float> Output = new HashMap<>();
+		private byte RecipeUpdateByRead = 3;
+		protected void BootstrapReduce() {
 			if (Boostrap > 0) {
 				Boostrap = Math.max(0, Boostrap - 1 / BoostrapTime);
 			}
 		}
-		protected void ProgressIncrease() {
+		protected void BootstrapIncrease() {
 			if (Boostrap < 1) {
 				Boostrap = Math.min(1, Boostrap + 1 / BoostrapTime);
 			}
 		}
-		public st.mod.modular.entity.Recipe Recipe;
-		public String RecipeName = "";
+		protected void ProgressIncrease() {
+			if (Recipe == null) return;
+			Progress = Math.min(Progress + (1 / Recipe.CraftTime) * edelta(), 1f);
+		}
+		protected void ProgressReduce() {
+			if (Recipe == null) {
+				Progress = Math.max(Progress - 1 / 90f, 0);
+			} else {
+				Progress = Math.max(Progress - 1 / Recipe.CraftTime, 0);
+			}
+		}
+		public void Craft() {
+			if (!this.Producing || Progress < 1) return;
+			Producing = false;
+			Progress = 0;
+			RecipeInited = false;
+			for (var i : Input.keySet()) {
+				if (i instanceof Item item) {
+					consumeItem(item, Math.round(Input.getOrDefault(i, 0f)));
+				}
+				if (i instanceof Liquid liquid) {
+					consumeLiquid(liquid, Input.getOrDefault(i, 0f));
+				}
+				if (i instanceof UnitType unit) {
+					Unit.put(unit, Math.max(0, Unit.getOrDefault(unit, 0f) - Input.get(i)));
+				}
+			}
+			for (var i : Output.keySet()) {
+				if (i instanceof Item item) {
+					items.add(item, Math.round(Output.get(i)));
+				}
+				if (i instanceof Liquid liquid) {
+					liquids.add(liquid, Output.get(i));
+				}
+				if (i instanceof UnitType unit) {
+					Unit.put(unit, Unit.getOrDefault(unit, 0f) + Output.get(i));
+				}
+			}
+			if (this.wasVisible && Recipe != null) {
+				Recipe.EffectCraft.at(this.x, this.y);
+			}
+			ProducingCheck();
+		}
+		public void ProducingCheck() {
+			Filled = false;
+			RecipeInit();
+			var result = true;
+			for (var i : Input.keySet()) {
+				if (i instanceof Item item) {
+					if (items.get(item) < Input.get(i)) {
+						result = false;
+						break;
+					}
+				}
+				if (i instanceof Liquid liquid) {
+					if (liquids.get(liquid) < Input.get(i)) {
+						result = false;
+						break;
+					}
+				}
+				if (i instanceof UnitType unit) {
+					if (Unit.get(unit) < Input.get(i)) {
+						result = false;
+						break;
+					}
+				}
+			}
+			for (var i : Output.keySet()) {
+				if (i instanceof Item item) {
+					if (items.get(item) + Output.get(i) > itemCapacity) {
+						result = false;
+						Filled = true;
+						break;
+					}
+				}
+				if (i instanceof Liquid liquid) {
+					if (liquids.get(liquid) + Output.get(i) > liquidCapacity) {
+						result = false;
+						Filled = true;
+						break;
+					}
+				}
+				if (i instanceof UnitType unit) {
+					if (Unit.get(unit) + Output.get(i) > CapacityUnit) {
+						result = false;
+						Filled = true;
+						break;
+					}
+				}
+			}
+			Producing = result;
+		}
 		public void RecipeUpdate(String name) {
 			RecipeName = name;
 			RecipeUpdate();
 		}
 		public void RecipeUpdate() {
+			RecipeInited = false;
+			Input.clear();
+			Output.clear();
 			var str = STMultiBlock.StructByBuilding.get(this);
 			if (str instanceof StructModular st) {
-				st.RemoveViewIO(this);
+				st.RemoveIO(this);
 			}
 			var old = Recipe;
 			this.Recipe = STModular.RecipeByName.get(RecipeName);
@@ -165,31 +286,129 @@ public class BlockModularFactory extends BlockModular {
 				Progress = 0;
 			}
 			if (str instanceof StructModular st) {
-				st.AddViewIO(this);
+				st.AddIO(this);
 			}
+			RecipeInit(true);
+		}
+		public void RecipeInit() {
+			RecipeInit(false);
+		}
+		public void RecipeInit(boolean force) {
+			if (RecipeInited && !force || Recipe == null) return;
+			RecipeInited = true;
+			Producing = false;
+			for (var i : Recipe.Input.keySet()) {
+				Input.put(i, Recipe.Input.get(i).Value());
+			}
+			for (var i : Recipe.Output.keySet()) {
+				Output.put(i, Recipe.Output.get(i).Value());
+			}
+			//Move excess
+			if (Struct != null) {
+				for (var i : Vars.content.items()) {
+					var def = items.get(i);
+					if (Input.get(i) == null && def > 0) {
+						var ls = Struct.AddRecourse(i, def);
+						items.set(i, (int) (ls));
+					}
+				}
+				for (var i : Vars.content.liquids()) {
+					var def = liquids.get(i);
+					if (Input.get(i) == null && def > 0) {
+						var ls = Struct.AddRecourse(i, def);
+						liquids.set(i, ls);
+					}
+				}
+				for (var i : Unit.keySet()) {
+					var def = Unit.get(i);
+					if (Input.get(i) == null && def > 0) {
+						var ls = Struct.AddRecourse(i, def);
+						Unit.put(i, ls);
+					}
+				}
+			}
+			ProducingCheck();
+		}
+		@Override
+		public void itemTaken(Item item) {
+			super.itemTaken(item);
+			ProducingCheck();
 		}
 		@Override
 		public void updateTile() {
 			super.updateTile();
+			if (RecipeUpdateByRead < 3) {
+				RecipeUpdateByRead++;
+				if (RecipeUpdateByRead == 2) {
+					RecipeUpdate();
+				}
+			}
 			if (Recipe == null) {
-				ProgressReduce();
+				BootstrapReduce();
 				return;
 			}
-			//check storage
+			if (Producing) {
+				BootstrapIncrease();
+				ProgressIncrease();
+			} else {
+				BootstrapReduce();
+				ProgressReduce();
+			}
+			if (Progress >= 1) Craft();
+		}
+		@Override
+		public boolean acceptItem(Building source, Item item) {
+			return this.Input.get(item) != null && this.items.get(item) < itemCapacity;
+		}
+		@Override
+		public void handleItem(Building source, Item item) {
+			super.handleItem(source, item);
+			ProducingCheck();
+		}
+		@Override
+		public boolean acceptLiquid(Building source, Liquid liquid) {
+			return this.Input.get(liquid) != null && this.liquids.get(liquid) < liquidCapacity;
+		}
+		@Override
+		public void handleLiquid(Building source, Liquid liquid, float amount) {
+			super.handleLiquid(source, liquid, amount);
+			ProducingCheck();
+		}
+		@Override
+		public boolean acceptPayload(Building source, Payload payload) {
+			if (!(payload instanceof UnitType unit)) return false;
+			return this.Input.get(unit) != null && this.Unit.getOrDefault(unit, 0f) < CapacityUnit;
+		}
+		@Override
+		public void handlePayload(Building source, Payload payload) {
+			if (payload instanceof UnitType unit) {
+				Unit.put(unit, Math.min(CapacityUnit, Unit.getOrDefault(unit, 0f) + 1));
+				ProducingCheck();
+			}
 		}
 		@Override
 		public float getPowerProduction() {
-			return super.getPowerProduction();
-
+			return 1f;
 		}
 		@Override
 		public void draw() {
 			//Running
-			var scl = Draw.scl;
 			Draw.scl(size / 5f);
 			Draw.rect(IconBase, x, y);
 			Draw.rect(IconTop, x, y);
-			Draw.scl(scl);
+			if (Recipe != null && Recipe.IconOutput != null) {
+				if (Recipe.IconOutput instanceof Item item) {
+					Draw.color(item.color);
+				} else if (Recipe.IconOutput instanceof Liquid liquid) {
+					Draw.color(liquid.color);
+				}
+			}
+			DrawHeat();
+			Draw.reset();
+		}
+		public void DrawHeat(){
+			Draw.alpha(Boostrap);
+			Draw.rect(IconHeat, x, y);
 		}
 		@Override
 		public byte version() {
@@ -205,9 +424,9 @@ public class BlockModularFactory extends BlockModular {
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			RecipeName = Arrays.toString(read.b(read.i()));
-			RecipeUpdate();
+			RecipeName = new String(read.b(read.i()));
 			Boostrap = read.f();
+			RecipeUpdateByRead = 0;
 		}
 		@Override
 		public Object config() {
@@ -216,6 +435,12 @@ public class BlockModularFactory extends BlockModular {
 		@Override
 		public void buildConfiguration(Table table) {
 			new DialogModular(this).show().exited(this::deselect);
+		}
+		@Override
+		public BlockStatus status() {
+			if (this.Filled) return BlockStatus.noOutput;
+			if (this.Producing) return BlockStatus.active;
+			return BlockStatus.noInput;
 		}
 	}
 }

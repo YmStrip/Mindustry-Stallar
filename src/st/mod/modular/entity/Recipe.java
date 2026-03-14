@@ -2,10 +2,11 @@ package st.mod.modular.entity;
 
 
 import arc.scene.ui.layout.Table;
+import mindustry.content.Fx;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
+import mindustry.entities.Effect;
 import mindustry.ui.Styles;
-import st.ST;
 import st.mod.ui.UtilUI;
 
 
@@ -64,6 +65,8 @@ public class Recipe extends UnlockableContent {
 		this.Output.put(type, new RecipeValue.RecipeValueStatic(value));
 		this.IconOutput(type);
 	}
+	//not sup in now
 	public float InputPower = 0;
 	public float OutputPower = 0;
+	public Effect EffectCraft = Fx.smeltsmoke;
 }

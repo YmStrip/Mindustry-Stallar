@@ -37,7 +37,17 @@ public class DialogModular extends DialogPane {
 					table.labelWrap("[red](" + st.Controller.size() + "/" + st.CapacityController + ")[white]").left().row();
 				}
 				table.labelWrap(ST.UI("modular_capacity_building") + ": " + (st.Building.size()) + "/" + (st.CapacityBuilding) + (st.OverloadCapacity ? ST.UI("modular_overload_capacity") : "")).left().row();
-				//
+				//buffer
+				table.labelWrap(() -> {
+					return ST.UI("modular_buffer_state_item") + ": " + DisplayBuffer(st.BufferItemInput, st.BufferItemOutput, st.CapacityBufferItem, st.CapacityTransItem);
+				}).left().row();
+				table.labelWrap(() -> {
+					return ST.UI("modular_buffer_state_liquid") + ": " + DisplayBuffer(st.BufferLiquidInput, st.BufferLiquidOutput, st.CapacityBufferLiquid, st.CapacityTransLiquid);
+				}).left().row();
+				table.labelWrap(() -> {
+					return ST.UI("modular_buffer_state_unit") + ": " + DisplayBuffer(st.BufferUnitInput, st.BufferUnitOutput, st.CapacityBufferUnit, st.CapacityTransUnit);
+				}).left().row();
+				//buildings
 				table.labelWrap(ST.UI("modular_building_list")).left().row();
 				for (var i : st.Building) {
 					if (i.block instanceof BlockModular p) {
@@ -56,6 +66,15 @@ public class DialogModular extends DialogPane {
 				}
 			}
 		});
+	}
+	public String DisplayNumber(float v) {
+		return (Math.round(v * 1000) / 1000) + "";
+	}
+	public String DisplayBuffer(float input, float output, float max, float speed) {
+		/**
+		 * eg. 80% (io:350|400,max:3000,speed:+0.5/s)
+		 */
+		return DisplayNumber(Math.max(input / max, output / max)) + "% (io:" + DisplayNumber(input) + "|" + DisplayNumber(output) + ",max:" + (DisplayNumber(max)) + ",speed:+" + (speed) + "/s)";
 	}
 	@Override
 	public Dialog show() {

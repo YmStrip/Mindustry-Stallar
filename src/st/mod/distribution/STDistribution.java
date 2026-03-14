@@ -34,21 +34,21 @@ public class STDistribution {
 		return builder;
 	}
 	public static BlockLiquidBuffer LiquidBuffer;
-	public static BlockLiquidBuffer LiquidBufferExtra;
+	//public static BlockLiquidBuffer LiquidBufferExtra;
 	//
 	public static BlockIOItem ItemInput;
 	public static BlockIOItem ItemOutput;
 	public static BlockIOItem ItemIO;
-	public static BlockIOItem ItemInputExtra;
-	public static BlockIOItem ItemOutputExtra;
-	public static BlockIOItem ItemIOExtra;
+	//public static BlockIOItem ItemInputExtra;
+	//public static BlockIOItem ItemOutputExtra;
+	//public static BlockIOItem ItemIOExtra;
 	//
 	public static BlockIOLiquid LiquidInput;
 	public static BlockIOLiquid LiquidOutput;
 	public static BlockIOLiquid LiquidIO;
-	public static BlockIOLiquid LiquidInputExtra;
-	public static BlockIOLiquid LiquidOutputExtra;
-	public static BlockIOLiquid LiquidIOExtra;
+	//public static BlockIOLiquid LiquidInputExtra;
+	//public static BlockIOLiquid LiquidOutputExtra;
+	//public static BlockIOLiquid LiquidIOExtra;
 	public static void Init() {
 		_initContent();
 		_initEvent();
@@ -57,16 +57,16 @@ public class STDistribution {
 		Events.on(EventType.WorldLoadEndEvent.class, e -> {
 			STTech
 				.createTechNodeRoot(STDistribution.ItemInput)
-				.Add(STDistribution.ItemInputExtra, t -> t
-					.Children(STDistribution.ItemOutputExtra)
-					.Children(STDistribution.ItemIOExtra)
-				)
+				//.Add(STDistribution.ItemInputExtra, t -> t
+				//	.Children(STDistribution.ItemOutputExtra)
+				//	.Children(STDistribution.ItemIOExtra)
+				//)
 				.Add(STDistribution.LiquidBuffer, t -> t
-					.Add(STDistribution.LiquidBufferExtra)
-					.Add(STDistribution.LiquidInputExtra, t1 -> t1
-						.Children(STDistribution.LiquidOutputExtra)
-						.Children(STDistribution.LiquidIOExtra)
-					)
+					//.Add(STDistribution.LiquidBufferExtra)
+					//.Add(STDistribution.LiquidInputExtra, t1 -> t1
+					//	.Children(STDistribution.LiquidOutputExtra)
+					//	.Children(STDistribution.LiquidIOExtra)
+					//)
 					.Children(STDistribution.LiquidInput)
 					.Children(STDistribution.LiquidOutput)
 					.Children(STDistribution.LiquidIO)
@@ -79,19 +79,18 @@ public class STDistribution {
 	private static void _initContent() {
 		LiquidBuffer = new BlockLiquidBuffer("LiquidBuffer") {{
 			requirements(Category.liquid, ItemStack.with(
-				Items.titanium, 250,
-				Items.silicon, 150,
-				Items.metaglass, 200,
-				Items.phaseFabric, 100,
-				Items.copper, 250,
-				Items.lead, 100
+				STItem.Chromal, 250,
+				STItem.Superconductor, 150,
+				STItem.Metrystal, 150,
+				STItem.Antimatter, 50,
+				Items.metaglass, 250
 			));
-			size = 2;
+			size = 3;
 			maxPlace = 4;
-			liquidCapacity = 800;
+			liquidCapacity = 2400;
 			Inject(this, 2);
 		}};
-		LiquidBufferExtra = new BlockLiquidBuffer("LiquidBufferExtra") {{
+		/*LiquidBufferExtra = new BlockLiquidBuffer("LiquidBufferExtra") {{
 			requirements(Category.liquid, ItemStack.with(
 				STItem.Chromal, 250,
 				STItem.Superconductor, 150,
@@ -103,44 +102,44 @@ public class STDistribution {
 			maxPlace = 4;
 			liquidCapacity = 1200;
 			Inject(this, 3);
-		}};
+		}};*/
 		//
 		ItemInput = new BlockIOItem("ItemInput") {{
 			InputAble = true;
-			InputRate = InputBufferMax = 6;
+			InputRate = InputBufferMax = 60;
 			requirements(Category.distribution, ItemStack.with(
-				STItem.Superconductor, 25,
-				Items.silicon, 25,
-				Items.phaseFabric, 25
+				STItem.Metrystal, 25,
+				STItem.Antimatter, 25,
+				STItem.Chromal, 25
 			));
 			Inject(this, 2);
 		}};
 		ItemOutput = new BlockIOItem("ItemOutput") {{
 			OutputAble = true;
-			OutputRate = OutputBufferMax = 6;
+			OutputRate = OutputBufferMax = 60;
 			CanSelect = true;
 			requirements(Category.distribution, ItemStack.with(
-				STItem.Superconductor, 25,
-				Items.silicon, 25,
-				Items.phaseFabric, 25
+				STItem.Metrystal, 25,
+				STItem.Antimatter, 25,
+				STItem.Chromal, 25
 			));
 			Inject(this, 2);
 		}};
 		ItemIO = new BlockIOItem("ItemIO") {{
 			OutputAble = true;
 			InputAble = true;
-			InputRate = InputBufferMax = 8;
-			OutputRate = OutputBufferMax = 8;
+			InputRate = InputBufferMax = 72;
+			OutputRate = OutputBufferMax = 72;
 			CanSelect = true;
 			requirements(Category.distribution, ItemStack.with(
-				STItem.Superconductor, 60,
-				Items.silicon, 60,
-				Items.phaseFabric, 60
+				STItem.Metrystal, 25,
+				STItem.Darkmatter, 25,
+				STItem.Chromal, 25
 			));
 			Inject(this, 2);
 		}};
 		//
-		ItemInputExtra = new BlockIOItem("ItemInputExtra") {{
+		/*ItemInputExtra = new BlockIOItem("ItemInputExtra") {{
 			InputRate = InputBufferMax = 40;
 			InputAble = true;
 			requirements(Category.distribution, ItemStack.with(
@@ -173,26 +172,26 @@ public class STDistribution {
 				STItem.Chromal, 60
 			));
 			Inject(this, 3);
-		}};
+		}};*/
 		//
 		LiquidInput = new BlockIOLiquid("LiquidInput") {{
 			InputAble = true;
-			InputRate = InputBufferMax = 45;
+			InputRate = InputBufferMax = 600;
 			requirements(Category.liquid, ItemStack.with(
-				STItem.Superconductor, 25,
-				Items.metaglass, 25,
-				Items.phaseFabric, 25
+				STItem.Metrystal, 25,
+				STItem.Antimatter, 25,
+				STItem.Chromal, 25
 			));
 			Inject(this, 2);
 		}};
 		LiquidOutput = new BlockIOLiquid("LiquidOutput") {{
 			OutputAble = true;
 			CanSelect = true;
-			OutputRate = OutputBufferMax = 45;
+			OutputRate = OutputBufferMax = 600;
 			requirements(Category.liquid, ItemStack.with(
-				STItem.Superconductor, 25,
-				Items.metaglass, 25,
-				Items.phaseFabric, 25
+				STItem.Metrystal, 25,
+				STItem.Antimatter, 25,
+				STItem.Chromal, 25
 			));
 			Inject(this, 2);
 		}};
@@ -200,17 +199,17 @@ public class STDistribution {
 			InputAble = true;
 			OutputAble = true;
 			CanSelect = true;
-			InputRate = InputBufferMax = 60;
-			OutputRate = OutputBufferMax = 60;
+			InputRate = InputBufferMax = 720;
+			OutputRate = OutputBufferMax = 720;
 			requirements(Category.liquid, ItemStack.with(
-				STItem.Superconductor, 60,
-				Items.metaglass, 60,
-				Items.phaseFabric, 60
+				STItem.Metrystal, 25,
+				STItem.Darkmatter, 25,
+				STItem.Chromal, 25
 			));
 			Inject(this, 2);
 		}};
 		//
-		LiquidInputExtra = new BlockIOLiquid("LiquidInputExtra") {{
+		/*LiquidInputExtra = new BlockIOLiquid("LiquidInputExtra") {{
 			InputAble = true;
 			InputRate = InputBufferMax = 800;
 			requirements(Category.liquid, ItemStack.with(
@@ -246,6 +245,6 @@ public class STDistribution {
 				STItem.Chromal, 60
 			));
 			Inject(this, 3);
-		}};
+		}};*/
 	}
 }
