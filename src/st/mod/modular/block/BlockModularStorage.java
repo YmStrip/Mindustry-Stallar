@@ -12,6 +12,8 @@ import st.mod.modular.struct.StructModular;
 public class BlockModularStorage extends BlockModular {
 	public BlockModularStorage(String name) {
 		super(name);
+		hasItems = true;
+		hasLiquids = true;
 	}
 	@Override
 	public void HandleStructAdd(StructModular struct, BlockModularBuilding building) {

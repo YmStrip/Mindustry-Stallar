@@ -81,7 +81,6 @@ public class STMultiBlock {
 				includes.add(def);
 			}
 		}
-		System.out.println("near by count"+includes.size()+":,pri:"+building.proximity.size);
 		if (includes.isEmpty()) return false;
 		if (includes.size() == 1) {
 			includes.iterator().next().Add(building);

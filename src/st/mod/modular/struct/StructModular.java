@@ -19,11 +19,10 @@ public class StructModular extends Struct {
 	public HashSet<BlockModularController.BlockModularControllerBuilding> Controller = new HashSet<>();
 	public int CapacityBuilding = 6;
 	public int CapacityController = 4;
-	public int CapacityBuildingDefault = 6;
 	public float CapacityTransLiquid = 60;
 	public float CapacityTransItem = 10;
 	public float CapacityTransUnit = 2 / 60f;
-	public float CapacityBufferLiquid = 120f;
+	public float CapacityBufferLiquid = 600f;
 	public float CapacityBufferItem = 60f;
 	public float CapacityBufferUnit = 1f;
 	public float BufferLiquidInput = 0;
@@ -51,7 +50,6 @@ public class StructModular extends Struct {
 	public void Schedule() {
 		//update weight
 		//sc
-
 	}
 	//view.readonly
 	public HashMap<BlockModularFactory.BlockModularFactoryBuilding, IO> IO = new HashMap<>();
@@ -66,11 +64,7 @@ public class StructModular extends Struct {
 		Overload = OverloadController || OverloadCapacity;
 	}
 	protected void OverloadCapacity() {
-		var capacity = this.CapacityBuildingDefault;
-		for (var i : Controller) {
-			capacity += ((BlockModularController) i.block).CapacityBuilding;
-		}
-		OverloadCapacity = Building.size() > capacity;
+		OverloadCapacity = Building.size() > CapacityBuilding;
 	}
 	//find the max and check
 	protected void OverloadController() {
@@ -207,6 +201,7 @@ public class StructModular extends Struct {
 	}
 	@Override
 	public void HandleTick() {
+		if (Overload) return;
 		super.HandleTick();
 		//update buffer
 		BufferItemInput = Math.min(BufferItemInput + CapacityTransItem / 60f, CapacityBufferItem);

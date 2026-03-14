@@ -1,29 +1,21 @@
 package st.mod.modular.block;
 
 
-import arc.Core;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
 import arc.struct.EnumSet;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
-import mindustry.content.Blocks;
-import mindustry.content.Fx;
-import mindustry.content.Items;
 import mindustry.ctype.UnlockableContent;
-import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
-import mindustry.type.LiquidStack;
 import mindustry.type.UnitType;
 import mindustry.ui.Styles;
-import mindustry.world.Block;
 import mindustry.world.blocks.payloads.Payload;
-import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.BuildVisibility;
@@ -42,9 +34,6 @@ import java.util.Objects;
 
 public class BlockModularFactory extends BlockModular {
 	public static String FilterRecipe = "";
-	public TextureRegion IconBase;
-	public TextureRegion IconHeat;
-	public TextureRegion IconTop;
 	//
 	public BlockModularFactory(String name) {
 		super(name);
@@ -64,20 +53,6 @@ public class BlockModularFactory extends BlockModular {
 				b.RecipeUpdate();
 			}
 		});
-	}
-	@Override
-	public void loadIcon() {
-		super.loadIcon();
-		IconBase = Core.atlas.find(this.name + "-base");
-		IconTop = Core.atlas.find(this.name + "-top");
-		IconHeat = Core.atlas.find(this.name + "-heat");
-	}
-	@Override
-	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		var scl = Draw.scl;
-		Draw.scl(size / 5f);
-		Draw.rect(uiIcon, x, y, rotation);
-		Draw.scl(scl);
 	}
 	@Override
 	public void HandleStructAdd(StructModular struct, BlockModularBuilding building) {
@@ -116,6 +91,10 @@ public class BlockModularFactory extends BlockModular {
 						if (isCurrent) {
 							container.row();
 							container.table(pane -> {
+								if (i.InputPower > 0)
+									pane.labelWrap(ST.UI("modular_input_power") + ": " + (Math.round(i.InputPower * 6000) / 100) + "/s").row();
+								if (i.OutputPower > 0)
+									pane.labelWrap(ST.UI("modular_output_power") + ": " + (Math.round(i.OutputPower * 6000) / 100) + "/s").row();
 								pane.table(a -> {
 									Recipe.RenderRecipeTable(i, ST.UI("modular_input"), i.Input, a);
 								}).expandX().fillX().top().left();
@@ -145,7 +124,7 @@ public class BlockModularFactory extends BlockModular {
 	public void ViewBar(Building building, Table table, DialogModular dialog) {
 		table.add(UtilUI.CreateIconButton(building.block.uiIcon, () -> {
 		})).size(42);
-		table.labelWrap(building.block.localizedName).expandX().left();
+		table.labelWrap(" " + building.block.localizedName).expandX().left();
 		if (building instanceof BlockModularFactoryBuilding b) {
 			if (b.Recipe != null) {
 				table.labelWrap(" " + b.Recipe.localizedName).expandX().padRight(5);
@@ -194,10 +173,10 @@ public class BlockModularFactory extends BlockModular {
 			RecipeInited = false;
 			for (var i : Input.keySet()) {
 				if (i instanceof Item item) {
-					consumeItem(item, Math.round(Input.getOrDefault(i, 0f)));
+					items.remove(item, Math.round(Input.getOrDefault(i, 0f)));
 				}
 				if (i instanceof Liquid liquid) {
-					consumeLiquid(liquid, Input.getOrDefault(i, 0f));
+					liquids.remove(liquid, Math.round(Input.getOrDefault(i, 0f)));
 				}
 				if (i instanceof UnitType unit) {
 					Unit.put(unit, Math.max(0, Unit.getOrDefault(unit, 0f) - Input.get(i)));
@@ -329,10 +308,16 @@ public class BlockModularFactory extends BlockModular {
 			}
 			ProducingCheck();
 		}
-		@Override
+		/*@Override
 		public void itemTaken(Item item) {
 			super.itemTaken(item);
 			ProducingCheck();
+		}*/
+		@Override
+		public int removeStack(Item item, int amount) {
+			var r = super.removeStack(item, amount);
+			if (r > 0) ProducingCheck();
+			return r;
 		}
 		@Override
 		public void updateTile() {
@@ -388,27 +373,25 @@ public class BlockModularFactory extends BlockModular {
 		}
 		@Override
 		public float getPowerProduction() {
-			return 1f;
+			if (Recipe == null) return 0;
+			if (!Producing) return 0;
+			return edelta() * Recipe.OutputPower;
 		}
 		@Override
 		public void draw() {
+			var size = block.size * Vars.tilesize;
 			//Running
-			Draw.scl(size / 5f);
-			Draw.rect(IconBase, x, y);
-			Draw.rect(IconTop, x, y);
+			Draw.rect(IconBase, x, y, size, size);
+			Draw.rect(IconTop, x, y, size, size);
+			var color = Color.white;
 			if (Recipe != null && Recipe.IconOutput != null) {
 				if (Recipe.IconOutput instanceof Item item) {
-					Draw.color(item.color);
+					color = item.color;
 				} else if (Recipe.IconOutput instanceof Liquid liquid) {
-					Draw.color(liquid.color);
+					color = liquid.color;
 				}
 			}
-			DrawHeat();
-			Draw.reset();
-		}
-		public void DrawHeat(){
-			Draw.alpha(Boostrap);
-			Draw.rect(IconHeat, x, y);
+			DrawHeat(color, Boostrap, 90);
 		}
 		@Override
 		public byte version() {
@@ -433,11 +416,8 @@ public class BlockModularFactory extends BlockModular {
 			return this.RecipeName;
 		}
 		@Override
-		public void buildConfiguration(Table table) {
-			new DialogModular(this).show().exited(this::deselect);
-		}
-		@Override
 		public BlockStatus status() {
+			if (efficiency <= 1e-6) return BlockStatus.noInput;
 			if (this.Filled) return BlockStatus.noOutput;
 			if (this.Producing) return BlockStatus.active;
 			return BlockStatus.noInput;

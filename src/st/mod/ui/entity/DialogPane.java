@@ -21,6 +21,14 @@ public class DialogPane extends Dialog {
 	public HashMap<String, PaneSelect> Pane = new HashMap<>();
 	public String Current = "";
 	public Table Body;
+	public void Pause() {
+		if (!state.isPaused() && !net.active()) {
+			state.set(GameState.State.paused);
+		}
+	}
+	public void Resume() {
+		if (state.isPaused()) state.set(GameState.State.playing);
+	}
 
 	public static interface PaneSelect {
 		void Call(Table table, Object param);
@@ -29,9 +37,9 @@ public class DialogPane extends Dialog {
 		Pane.put(name, call);
 	}
 	public void Toggle(String name) {
-		Toggle(name,null);
+		Toggle(name, null);
 	}
-	public void Toggle(String name,Object param) {
+	public void Toggle(String name, Object param) {
 		var def = Pane.get(name);
 		if (def == null) return;
 		if (Body == null) return;
@@ -65,14 +73,11 @@ public class DialogPane extends Dialog {
 		} else {
 			builder.pad(150);
 		}
-		if (!state.isPaused() && !net.active()) {
-			state.set(GameState.State.paused);
-		}
+
 		return super.show();
 	}
 	@Override
 	public void hide() {
 		super.hide();
-		if (state.isPaused()) state.set(GameState.State.playing);
 	}
 }

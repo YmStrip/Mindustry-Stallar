@@ -56,7 +56,7 @@ public class DialogModular extends DialogPane {
 							p.ViewBar(i, table1, this);
 							table1.button(Icon.settings, () -> {
 								Toggle("modular_current", i);
-							}).size(42);
+							}).size(42).right();
 						}).expandX().fillX().left().row();
 					} else {
 						var row = UtilUI.CreateIconRow(i.block.uiIcon);
@@ -72,9 +72,11 @@ public class DialogModular extends DialogPane {
 	}
 	public String DisplayBuffer(float input, float output, float max, float speed) {
 		/**
-		 * eg. 80% (io:350|400,max:3000,speed:+0.5/s)
+		 * eg. 80% (350|400|3000) +0.5/s
 		 */
-		return DisplayNumber(Math.max(input / max, output / max)) + "% (io:" + DisplayNumber(input) + "|" + DisplayNumber(output) + ",max:" + (DisplayNumber(max)) + ",speed:+" + (speed) + "/s)";
+		var p = Math.max(input / max, output / max);
+		var color = p < 0.2 ? "[red]" : p < 0.6 ? "[orange]" : "[green]";
+		return color + DisplayNumber(p * 100) + "% [gray](" + DisplayNumber(input) + "|" + DisplayNumber(output) + "|" + (DisplayNumber(max)) + ") +" + DisplayNumber(speed) + "/s)[white]";
 	}
 	@Override
 	public Dialog show() {

@@ -2,10 +2,13 @@ package st.mod.modular;
 
 import arc.Events;
 import mindustry.Vars;
+import mindustry.content.Blocks;
 import mindustry.content.Items;
+import mindustry.content.Liquids;
 import mindustry.game.EventType;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
+import mindustry.type.Liquid;
 import st.id.entity.IDEventEmitter;
 import st.mod.STTech;
 import st.mod.UtilTooltip;
@@ -36,6 +39,8 @@ public class STModular {
 	public static Recipe RecipeSiliconCentrifugal;
 	public static Recipe RecipeGraphite;
 	//
+	public static Recipe RecipeTurbineCoal;
+	//
 	public static IDEventEmitter Event = new IDEventEmitter();
 	public static void Init() {
 		_initContent();
@@ -45,7 +50,7 @@ public class STModular {
 		//
 		Controller = new BlockModularController("Controller") {{
 			size = 2;
-			CapacityBuilding = 6;
+			CapacityBuilding = 8;
 			requirements(Category.effect, ItemStack.with(
 				Items.silicon, 75,
 				Items.metaglass, 25,
@@ -53,14 +58,17 @@ public class STModular {
 				Items.copper, 100,
 				Items.lead, 50
 			));
-			consumePower(24f / 60);
+			consumePower(8f / 60);
 			Inject(this, 1);
 		}};
 		Router = new BlockModularRouter("Router") {{
 			size = 2;
-			CapacityTransItem = 16;
-			CapacityTransLiquid = 120;
+			CapacityTransItem = 12;
+			CapacityTransLiquid = 90;
 			CapacityTransUnit = 3 / 60f;
+			CapacityBufferItem = 120;
+			CapacityBufferLiquid = 900;
+			CapacityBufferUnit = 1;
 			requirements(Category.effect, ItemStack.with(
 				Items.silicon, 25,
 				Items.copper, 25,
@@ -72,8 +80,8 @@ public class STModular {
 		}};
 		Storage = new BlockModularStorage("Storage") {{
 			size = 3;
-			itemCapacity = 300;
-			liquidCapacity = 120;
+			itemCapacity = 120;
+			liquidCapacity = 900;
 			CapacityUnit = 4f;
 			requirements(Category.effect, ItemStack.with(
 				Items.copper, 120,
@@ -118,6 +126,7 @@ public class STModular {
 				Items.lead, 25
 			));
 			Inject(this, 1);
+			consume(new ConsumePowerRecipe(180f / 60));
 		}};
 		Assembly = new BlockModularFactory("Assembly") {{
 			size = 3;
@@ -142,6 +151,7 @@ public class STModular {
 				Items.copper, 80,
 				Items.lead, 150
 			));
+			consume(new ConsumePowerRecipe(120f / 60));
 			Inject(this, 2);
 		}};
 		Collider = new BlockModularFactory("Collider") {{
@@ -156,32 +166,41 @@ public class STModular {
 				Items.copper, 500,
 				Items.lead, 500
 			));
+			consume(new ConsumePowerRecipe(1024f / 60));
 			Inject(this, 3);
 		}};
 		//
 		RecipeGraphite = new Recipe("RecipeGraphite") {{
-			CraftTime = 90.0F;
+			CraftTime = 70.0F;
 			InputPower(10f / 60f);
 			Input(Items.coal, 2);
 			Output(Items.graphite, 1);
 			Inject(this, Constructor, 1);
 		}};
 		RecipeSilicon = new Recipe("RecipeSilicon") {{
-			CraftTime = 40.0F;
+			CraftTime = 30.0F;
 			InputPower(30f / 60f);
 			Input(Items.coal, 1);
-			Input(Items.sand, 2);
+			Input(Items.sand, 1);
 			Output(Items.silicon, 1);
 			Inject(this, Constructor, 1);
 		}};
 		RecipeSiliconCentrifugal = new Recipe("RecipeSiliconCentrifugal") {{
-			CraftTime = 60.0F;
+			CraftTime = 45.0F;
 			InputPower(60f / 60f);
 			Input(Items.coal, 2);
 			Input(Items.sand, 2);
 			Output(Items.silicon, 1);
 			Output(Items.graphite, 1);
 			Inject(this, Refinery, 1);
+		}};
+		//
+		RecipeTurbineCoal = new Recipe("RecipeTurbineCoal") {{
+			CraftTime = 90.0F;
+			OutputPower(400f / 60f);
+			Input(Items.coal, 1);
+			Input(Liquids.water, 7);
+			Inject(this, Turbine, 1);
 		}};
 		//
 	}

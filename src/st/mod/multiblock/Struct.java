@@ -12,7 +12,7 @@ public abstract class Struct {
 	public static class HistoryCheckpoint {
 		public int Min = 0;
 		public int Max = 0;
-		public HashMap<HistoryCheckpoint,ArrayList<Integer>> Connect = new HashMap<>();
+		public HashMap<HistoryCheckpoint, ArrayList<Integer>> Connect = new HashMap<>();
 	}
 
 	public Struct(mindustry.game.Team team) {
@@ -59,9 +59,9 @@ public abstract class Struct {
 	}
 	public abstract Struct Split(HashSet<Building> building);
 	public void Clear() {
-		var iter = Building.iterator();
-		while (iter.hasNext()) {
-			Remove(iter.next());
+		var ar = Building.toArray();
+		for (Object object : ar) {
+			Remove((mindustry.gen.Building) object);
 		}
 	}
 	public void Destroy() {
