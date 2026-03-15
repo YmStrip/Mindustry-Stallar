@@ -9,7 +9,7 @@ import st.mod.modular.block.BlockModular;
 import st.mod.modular.struct.StructModular;
 import st.mod.multiblock.STMultiBlock;
 import st.mod.ui.UtilUI;
-import st.mod.ui.entity.DialogPane;
+import st.mod.ui.DialogPane;
 
 
 public class DialogModular extends DialogPane {
@@ -17,9 +17,10 @@ public class DialogModular extends DialogPane {
 	public DialogModular(BlockModular.BlockModularBuilding building) {
 		Building = building;
 		Pane("modular_current", (table, param) -> {
-			var target = (param instanceof mindustry.gen.Building tar) ? tar : building;
+			var target = (param instanceof BlockModular.BlockModularBuilding tar) ? tar : building;
 			if (target.block instanceof BlockModular b) {
-				b.ViewConfig(target, table, this);
+				b.RenderConfig(target, table, this);
+				b.RenderStyle(target, table, this);
 			} else {
 				table.labelWrap(ST.UI("modular_not_found"));
 			}
@@ -53,7 +54,9 @@ public class DialogModular extends DialogPane {
 					if (i.block instanceof BlockModular p) {
 						table.table(table1 -> {
 							table1.setBackground(Styles.black);
-							p.ViewBar(i, table1, this);
+							if (i instanceof BlockModular.BlockModularBuilding b) {
+								p.RenderBar(b, table1, this);
+							}
 							table1.button(Icon.settings, () -> {
 								Toggle("modular_current", i);
 							}).size(42).right();

@@ -1,4 +1,4 @@
-package st.mod.ui.entity;
+package st.mod.ui;
 
 import arc.Core;
 import arc.scene.ui.Dialog;

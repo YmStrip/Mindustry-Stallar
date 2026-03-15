@@ -20,15 +20,19 @@ import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.blocks.payloads.Payload;
 import org.json.JSONObject;
+import st.ST;
 import st.mod.modular.ui.DialogModular;
 import st.mod.multiblock.STMultiBlock;
 import st.mod.modular.struct.StructModular;
 import st.mod.ui.UtilUI;
+import st.mod.ui.ViewBool;
+import st.mod.ui.ViewColor;
+import st.mod.util.BlockCodec;
 
 
 import java.util.HashMap;
 
-public class BlockModular extends Block {
+public class BlockModular extends BlockCodec {
 	public float CapacityUnit = 0;
 	public TextureRegion IconBase;
 	public TextureRegion IconHeat;
@@ -38,7 +42,6 @@ public class BlockModular extends Block {
 		update = true;
 		solid = true;
 		sync = true;
-		configurable = true;
 		hasPower = true;
 		outputsPower = true;
 	}
@@ -54,11 +57,29 @@ public class BlockModular extends Block {
 		var drawSize = plan.block.size * Vars.tilesize;
 		Draw.rect(region, plan.drawx(), plan.drawy(), drawSize, drawSize);
 	}
-	public void ViewConfig(Building building, Table table, DialogModular dialog) {
+	public void RenderConfig(BlockModularBuilding building, Table table, DialogModular dialog) {
 		table.labelWrap(building.block.localizedName).expandX().fillX().row();
 		table.labelWrap(building.block.displayDescription()).expandX().fillX().row();
 	}
-	public void ViewBar(Building building, Table table, DialogModular dialog) {
+	public void RenderStyle(BlockModularBuilding building, Table table, DialogModular dialog) {
+		table.labelWrap(ST.UI("modular_style")).left().fillX().expandX().row();
+		var Light = new ViewBool(building.Light, ST.UI("modular_light")) {
+			@Override
+			public void Update() {
+				building.Light = Model;
+			}
+		};
+		var LightColor = new ViewColor(building.LightColor) {
+			@Override
+			public void Update() {
+				super.Update();
+				building.LightColor = Model;
+			}
+		};
+		table.add(Light).expandX().fillX().left().row();
+		table.add(LightColor).expandX().fillX().left().row();
+	}
+	public void RenderBar(BlockModularBuilding building, Table table, DialogModular dialog) {
 		table.add(UtilUI.CreateIconButton(building.block.uiIcon, () -> {
 		})).size(42);
 		table.labelWrap(" " + building.block.localizedName).expandX().left();
@@ -67,8 +88,12 @@ public class BlockModular extends Block {
 	}
 	public void HandleStructRemove(StructModular struct, BlockModularBuilding building) {
 	}
-	public class BlockModularBuilding extends Building {
+	public void HandleConfig(BlockModularBuilding building, JSONObject json) {
+	}
+	public class BlockModularBuilding extends BlockCodecBuilding {
 		public HashMap<UnitType, Float> Unit = new HashMap<>();
+		public boolean Light = false;
+		public Color LightColor = Color.white;
 		/**
 		 * view.optimize maintain by StructModular [Add|Remove]
 		 */
@@ -82,32 +107,6 @@ public class BlockModular extends Block {
 		public void onRemoved() {
 			super.onRemoved();
 			STMultiBlock.Remove(this);
-		}
-		@Override
-		public void write(Writes write) {
-			super.write(write);
-			var json = new JSONObject();
-			for (var i : Unit.keySet()) {
-				json.put(i.name, Unit.get(i));
-			}
-			var jsonStr = json.toString();
-			write.i(jsonStr.length());
-			write.b(jsonStr.getBytes());
-		}
-		@Override
-		public void read(Reads read, byte revision) {
-			super.read(read, revision);
-			var str = new String(read.b(read.i()));
-			try {
-				var json = new JSONObject(str);
-				for (var i : json.keySet()) {
-					var unit = Vars.content.unit((String) i);
-					if (unit != null) {
-						Unit.put(unit, json.getFloat(i));
-					}
-				}
-			} catch (Exception e) {
-			}
 		}
 		@Override
 		public boolean acceptItem(Building source, Item item) {
@@ -129,9 +128,11 @@ public class BlockModular extends Block {
 		public void DrawHeat(Color color, float alpha, float smoothTime) {
 			DrawHeatSmooth = Mathf.lerpDelta(DrawHeatSmooth, alpha, 1 / smoothTime);
 			var size = block.size * Vars.tilesize;
-			Draw.color(color, Color.white, 0.1f);
 			Draw.alpha(DrawHeatSmooth);
+			Draw.rect(fullIcon, x, y, size, size);
+			Draw.color(color, color, 0.3f);
 			Draw.blend(Blending.additive);
+			Draw.alpha(DrawHeatSmooth);
 			Draw.rect(IconHeat, x, y, size, size);
 			Draw.blend();
 			Draw.reset();
@@ -145,7 +146,58 @@ public class BlockModular extends Block {
 				Draw.rect(fullIcon, x, y, size, size);
 			}
 			if (IconTop.found()) Draw.rect(IconTop, x, y, size, size);
-			if (IconHeat.found()) DrawHeat(Color.white, power.status, 90);
+			if (IconHeat.found()) DrawHeat(Light ? LightColor : Color.white, power.status, 90);
+		}
+		/**
+		 * configure data
+		 *
+		 * @param json      json value
+		 * @param isBlueMap isBlueMap
+		 */
+		@Override
+		public void Configure(JSONObject json, boolean isBlueMap) {
+			var r = json.getFloat("LightColor.R");
+			var g = json.getFloat("LightColor.G");
+			var b = json.getFloat("LightColor.B");
+			Light = json.getBoolean("Light");
+			LightColor = new Color(r, g, b);
+			//
+			if (!isBlueMap) {
+				try {
+					var units = json.getJSONObject("Unit");
+					if (units != null) {
+						for (var i : units.keySet()) {
+							var unit = Vars.content.unit(i);
+							if (unit != null) {
+								Unit.put(unit, units.getFloat(i));
+							}
+						}
+					}
+				} catch (Exception e) {
+				}
+			}
+		}
+		/**
+		 * get serialize data
+		 *
+		 * @param isBlueMap
+		 * @return
+		 */
+		@Override
+		public JSONObject Serialize(boolean isBlueMap) {
+			var json = new JSONObject();
+			json.put("LightColor.R", LightColor.r);
+			json.put("LightColor.G", LightColor.g);
+			json.put("LightColor.B", LightColor.b);
+			json.put("Light", Light);
+			if (!isBlueMap) {
+				var unit = new JSONObject();
+				for (var i : Unit.keySet()) {
+					unit.put(i.name, Unit.get(i));
+				}
+				json.put("Unit", unit);
+			}
+			return json;
 		}
 	}
 }

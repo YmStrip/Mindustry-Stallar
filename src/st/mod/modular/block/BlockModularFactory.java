@@ -19,12 +19,15 @@ import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.BuildVisibility;
+import org.json.JSONObject;
 import st.ST;
 import st.mod.modular.STModular;
 import st.mod.modular.entity.Recipe;
 import st.mod.modular.struct.StructModular;
 import st.mod.modular.ui.DialogModular;
 import st.mod.multiblock.STMultiBlock;
+import st.mod.ui.ViewModel;
+import st.mod.ui.ViewString;
 import st.mod.ui.UtilUI;
 
 
@@ -47,12 +50,6 @@ public class BlockModularFactory extends BlockModular {
 		liquidCapacity = 120;
 		CapacityUnit = 2;
 		outputsPower = true;
-		config(String.class, (building, string) -> {
-			if (building instanceof BlockModularFactoryBuilding b) {
-				b.RecipeName = string;
-				b.RecipeUpdate();
-			}
-		});
 	}
 	@Override
 	public void HandleStructAdd(StructModular struct, BlockModularBuilding building) {
@@ -63,9 +60,9 @@ public class BlockModularFactory extends BlockModular {
 		if (building instanceof BlockModularFactoryBuilding b) struct.RemoveIO(b);
 	}
 	@Override
-	public void ViewConfig(Building building, Table table, DialogModular dialog) {
+	public void RenderConfig(BlockModularBuilding building, Table table, DialogModular dialog) {
 		if (!(building instanceof BlockModularFactoryBuilding b)) return;
-		var View = new UtilUI.ModelView<Object>(null) {
+		var View = new ViewModel<Object>(null) {
 			public void Render(Object param) {
 				var list = STModular.RecipeByFactoryName.get(building.block.name);
 				if (list == null) {
@@ -110,7 +107,7 @@ public class BlockModularFactory extends BlockModular {
 		};
 		table.table(recipe -> {
 			recipe.labelWrap(ST.UI("modular_recipe")).left().row();
-			recipe.add(new UtilUI.Input(FilterRecipe) {
+			recipe.add(new ViewString(FilterRecipe) {
 				@Override
 				public void HandleInput(String text) {
 					FilterRecipe = text;
@@ -121,7 +118,7 @@ public class BlockModularFactory extends BlockModular {
 		}).fillX().expandX().left().top().row();
 	}
 	@Override
-	public void ViewBar(Building building, Table table, DialogModular dialog) {
+	public void RenderBar(BlockModularBuilding building, Table table, DialogModular dialog) {
 		table.add(UtilUI.CreateIconButton(building.block.uiIcon, () -> {
 		})).size(42);
 		table.labelWrap(" " + building.block.localizedName).expandX().left();
@@ -144,6 +141,7 @@ public class BlockModularFactory extends BlockModular {
 		public boolean RecipeInited = false;
 		public HashMap<UnlockableContent, Float> Input = new HashMap<>();
 		public HashMap<UnlockableContent, Float> Output = new HashMap<>();
+
 		private byte RecipeUpdateByRead = 3;
 		protected void BootstrapReduce() {
 			if (Boostrap > 0) {
@@ -308,6 +306,31 @@ public class BlockModularFactory extends BlockModular {
 			}
 			ProducingCheck();
 		}
+		public void DumpOutputs() {
+			if (this.timer(0, dumpTime / timeScale)) {
+				for (var i : this.Output.keySet()) {
+					if (i instanceof Item item) {
+						this.dump(item);
+					} else if (i instanceof Liquid liquid) {
+						this.dumpLiquid(liquid);
+					} else if (i instanceof UnitType unitType) {
+						var has = this.dumpPayload((Payload) unitType);
+						if (has) {
+							Unit.put(unitType, Math.max(Unit.getOrDefault(i, 0f) - 1, 0f));
+						}
+					}
+				}
+			}
+		}
+		@Override
+		public void transferLiquid(Building next, float amount, Liquid liquid) {
+			float flow = Math.min(next.block.liquidCapacity - next.liquids.get(liquid), amount);
+			if (next.acceptLiquid(this, liquid)) {
+				next.handleLiquid(this, liquid, flow);
+				this.liquids.remove(liquid, flow);
+				ProducingCheck();
+			}
+		}
 		/*@Override
 		public void itemTaken(Item item) {
 			super.itemTaken(item);
@@ -322,6 +345,7 @@ public class BlockModularFactory extends BlockModular {
 		@Override
 		public void updateTile() {
 			super.updateTile();
+			DumpOutputs();
 			if (RecipeUpdateByRead < 3) {
 				RecipeUpdateByRead++;
 				if (RecipeUpdateByRead == 2) {
@@ -333,7 +357,8 @@ public class BlockModularFactory extends BlockModular {
 				return;
 			}
 			if (Producing) {
-				BootstrapIncrease();
+				if (efficiency > 1e-6) BootstrapIncrease();
+				else BootstrapReduce();
 				ProgressIncrease();
 			} else {
 				BootstrapReduce();
@@ -381,42 +406,47 @@ public class BlockModularFactory extends BlockModular {
 		public void draw() {
 			var size = block.size * Vars.tilesize;
 			//Running
-			Draw.rect(IconBase, x, y, size, size);
-			Draw.rect(IconTop, x, y, size, size);
+			if (IconBase.found()) Draw.rect(IconBase, x, y, size, size);
+			if (IconTop.found()) Draw.rect(IconTop, x, y, size, size);
 			var color = Color.white;
-			if (Recipe != null && Recipe.IconOutput != null) {
-				if (Recipe.IconOutput instanceof Item item) {
-					color = item.color;
-				} else if (Recipe.IconOutput instanceof Liquid liquid) {
-					color = liquid.color;
+			if (Light) {
+				color = LightColor;
+			} else {
+				if (Recipe != null && Recipe.IconOutput != null) {
+					if (Recipe.IconOutput instanceof Item item) {
+						color = item.color;
+					} else if (Recipe.IconOutput instanceof Liquid liquid) {
+						color = liquid.color;
+					}
+					color.lerp(color, 0.5f);
 				}
 			}
 			DrawHeat(color, Boostrap, 90);
 		}
 		@Override
-		public byte version() {
-			return 0;
+		public void Configure(JSONObject json, boolean isBlueMap) {
+			super.Configure(json, isBlueMap);
+			RecipeName = json.getString("RecipeName");
+			if (RecipeName == null) RecipeName = "";
+			if (!isBlueMap) {
+				Boostrap = json.getFloat("Boostrap");
+				Progress = json.getFloat("Progress");
+			}
+			RecipeUpdate();
 		}
 		@Override
-		public void write(Writes write) {
-			super.write(write);
-			write.i(RecipeName.getBytes().length);
-			write.b(RecipeName.getBytes());
-			write.f(Boostrap);
-		}
-		@Override
-		public void read(Reads read, byte revision) {
-			super.read(read, revision);
-			RecipeName = new String(read.b(read.i()));
-			Boostrap = read.f();
-			RecipeUpdateByRead = 0;
-		}
-		@Override
-		public Object config() {
-			return this.RecipeName;
+		public JSONObject Serialize(boolean isBlueMap) {
+			var obj = super.Serialize(isBlueMap);
+			obj.put("RecipeName", RecipeName);
+			if (!isBlueMap) {
+				obj.put("Boostrap", Boostrap);
+				obj.put("Progress", Progress);
+			}
+			return obj;
 		}
 		@Override
 		public BlockStatus status() {
+			if (Recipe == null) return BlockStatus.logicDisable;
 			if (efficiency <= 1e-6) return BlockStatus.noInput;
 			if (this.Filled) return BlockStatus.noOutput;
 			if (this.Producing) return BlockStatus.active;

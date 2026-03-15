@@ -49,7 +49,7 @@ public class STModular {
 	private static void _initContent() {
 		//
 		Controller = new BlockModularController("Controller") {{
-			size = 2;
+			size = 3;
 			CapacityBuilding = 8;
 			requirements(Category.effect, ItemStack.with(
 				Items.silicon, 75,
@@ -101,11 +101,15 @@ public class STModular {
 				Items.copper, 25,
 				Items.lead, 25
 			));
+			itemCapacity = 10;
+			liquidCapacity = 24;
 			consume(new ConsumePowerRecipe(60f / 60));
 			Inject(this, 1);
 		}};
 		Refinery = new BlockModularFactory("Refinery") {{
-			size = 2;
+			size = 3;
+			itemCapacity = 15;
+			liquidCapacity = 30;
 			requirements(Category.crafting, ItemStack.with(
 				Items.plastanium, 50,
 				Items.silicon, 100,
@@ -117,7 +121,9 @@ public class STModular {
 			Inject(this, 1);
 		}};
 		Turbine = new BlockModularFactory("Turbine") {{
-			size = 2;
+			size = 3;
+			itemCapacity = 24;
+			liquidCapacity = 60;
 			requirements(Category.power, ItemStack.with(
 				Items.plastanium, 50,
 				Items.silicon, 100,
@@ -126,10 +132,12 @@ public class STModular {
 				Items.lead, 25
 			));
 			Inject(this, 1);
-			consume(new ConsumePowerRecipe(180f / 60));
+			consume(new ConsumePowerRecipe(0f / 60));
 		}};
 		Assembly = new BlockModularFactory("Assembly") {{
-			size = 3;
+			size = 4;
+			itemCapacity = 15;
+			liquidCapacity = 30;
 			requirements(Category.crafting, ItemStack.with(
 				Items.plastanium, 50,
 				Items.silicon, 50,
@@ -142,6 +150,8 @@ public class STModular {
 		}};
 		Nuclear = new BlockModularFactory("Nuclear") {{
 			size = 4;
+			itemCapacity = 12;
+			liquidCapacity = 60;
 			requirements(Category.power, ItemStack.with(
 				Items.phaseFabric, 75,
 				Items.silicon, 75,
@@ -156,6 +166,8 @@ public class STModular {
 		}};
 		Collider = new BlockModularFactory("Collider") {{
 			size = 5;
+			itemCapacity = 24;
+			liquidCapacity = 24;
 			requirements(Category.production, ItemStack.with(
 				Items.surgeAlloy, 500,
 				Items.phaseFabric, 250,
